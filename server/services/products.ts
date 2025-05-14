@@ -9,8 +9,8 @@ export interface Product {
   created_at: string;
 }
 
-export async function getAllProducts() {
-  const products = await sql` select * 
+export async function getAllProducts(): Promise<Product[]> {
+  const products: Product[] = await sql` select * 
                         from products
                         order by created_at `;
   return products;

@@ -1,0 +1,49 @@
+<div class="news_detail">
+  <h1><%= products.name %></h1>
+  <div class="image">
+    <img src="/images/<%= products.image_url %>" alt="nwsnwsnws" />
+  </div>
+  <p><%= products.description %></p>
+
+  <div class="comments_list">
+    <h2>Reacties</h2>
+    <form>
+      <label>
+        Jouw naam<br />
+        <input type="text" name="info" id="info" placeholder="Jouw naam" />
+      </label>
+      <label>
+        Jouw reactie<br />
+        <textarea
+          name="comment"
+          id="comment"
+          cols="30"
+          rows="4"
+          placeholder="Plaats jouw reactie..."
+        ></textarea>
+      </label>
+      <button type="submit">Reactie plaatsen</button>
+    </form>
+    <div class="comment">
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod,
+        voluptates, quae, quibusdam quia quos
+      </p>
+      <div class="info">Jantje &bull; 3 maart 2024 19:35</div>
+    </div>
+    <div class="comment">
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod,
+        voluptates, quae, quibusdam quia quos
+      </p>
+      <div class="info">Klaasje &bull; 3 maart 2024 9:17</div>
+    </div>
+    <div class="comment">
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod,
+        voluptates, quae, quibusdam quia quos
+      </p>
+      <div class="info">Pietje &bull; 1 maart 2024 14:54</div>
+    </div>
+  </div>
+</div>
