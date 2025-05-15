@@ -1,199 +1,122 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 :root {
-    --primary-color: hsl(353, 84%, 69%);
-    --secondary-color: hsl(233, 84%, 69%);
-    --tertiary-color: hsl(113, 84%, 69%);
-    --quaternary-color: hsl(43, 84%, 69%);
-    --light-color: hsl(42, 100%, 97%);
-    --dark-color:hsl(42, 100%, 8%);
+  /* Primary Colors */
+  --color-primary: #2c3e50; /* A dark blue, good for headers, icons, or buttons */
+  --color-primary-light: #34495e; /* A lighter version of the primary color */
+
+  /* Secondary Colors */
+  --color-secondary: #18bc9c; /* A teal green for accents or action items */
+  --color-secondary-light: #1abc9c;
+
+  /* Accent Colors */
+  --color-accent: #f39c12; /* A vibrant orange to highlight important features */
+  --color-accent-light: #f1c40f;
+
+  /* Danger Colors */
+  --color-danger: #e74c3c; /* A strong red for errors or destructive actions */
+  --color-danger-light: #ff7675; /* A lighter red for hover or background */
+
+  /* Backgrounds & Surfaces */
+  --color-bg: #ecf0f1; /* Light background color for pages or cards */
+  --color-surface: #ffffff; /* Pure white for panels, modals, or forms */
+
+  /* Text Colors */
+  --color-text: #34495e; /* Dark text for high contrast on light backgrounds */
+  --color-text-muted: #7f8c8d; /* Muted text for less emphasis */
+
+  /* Border & Dividers */
+  --color-border: #bdc3c7; /* A soft grey for borders and separators */
 }
 
+/* Example usage */
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: var(--light-color);
-    color: var(--dark-color);
-    line-height: 140%;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: Arial, sans-serif;
 }
 
-p {
-    margin: 0 0 1rem 0;
+.header,
+.footer {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+  padding: 1rem;
 }
 
-header {
-    margin-bottom: 2rem;;
-    & .brand {
-        width: 8rem;
-        height: 6rem;
-        & img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    }
+.button {
+  background-color: var(--color-secondary);
+  color: var(--color-surface);
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
+.button:hover {
+  background-color: var(--color-secondary-light);
+}
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
 }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: 1fr;
+  grid-gap: 1rem;
 
-.news_list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 28vw);
-    grid-auto-rows: 30vw;
-    gap: 6vw;
-    & .news_item {
-        box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-        text-decoration: none;
-        position: relative;
-        width: 100%;
-        height: 100%;
-        & img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        & span {
-            padding: 1rem;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            margin: 0;
-            position: absolute;
-            background-color: black;
-            color: white;
-            bottom: 0;
-            rotate: -5deg;
-        }
-        &::before {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            width: 100%;
-            height: 100%;
-            border: solid .5rem var(--primary-color);
-            opacity: 1;
-            rotate: 2deg;
-            
-        }
-        &:nth-child(4n) {
-            & span {
-                rotate: 5deg;
-            }
-            &::before {
-                border-color: var(--secondary-color);
-                rotate: -2deg;
+  .card {
+    background-color: var(--color-surface);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
 
-            }
-        }
-        &:nth-child(4n+1) {
-            &::before {
-                border-color: var(--tertiary-color);
-                rotate: 1deg;
-
-            }
-        }
-        &:nth-child(4n+2) {
-            & span {
-                rotate: 5deg;
-            }
-            &::before {
-                rotate: -3deg;
-                border-color: var(--quaternary-color);
-            }
-        }
+    .card__image {
+      max-width: 100%;
+      border-radius: 4px 4px 0 0;
+      object-fit: cover;
+      object-position: center;
     }
-}
+    .card__content {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
 
-.news_detail {
-    h1 {
-        display: inline-block;
-        background-color: black;
-        color: white;
-        padding: .5rem 1rem;
-        margin-left: 1rem;
-        position: relative;
-        rotate: 3deg;
-        z-index: 5;
+      .card__title {
+        font-size: 1.5rem;
+      }
+
+      .card__price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--color-primary);
+      }
+
+      .card__button {
+        background-color: var(--color-accent);
+        color: var(--color-surface);
+        border-radius: 4px;
+        border: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: var(--color-accent-light);
+        }
+
+        &.card__button--danger {
+          background-color: var(--color-danger);
+          color: var(--color-surface);
+          border: none;
+          padding: 0.5rem 1rem;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: var(--color-danger-light);
+          }
+        }
+      }
     }
-    .image {
-        display: block;
-        margin-top: -2rem;
-        width: 100%;
-        height: 50vh;
-        object-fit: cover;
-        position: relative;
-        margin-bottom: 2rem;
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        &::before {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            width: 100%;
-            height: 100%;
-            border: solid .5rem var(--primary-color);
-            opacity: 1;
-            rotate: -1deg;
-        }
-    }
-
-    
-}
-
-.comments_list {
-    margin-top: 2rem;
-    h2 {
-        margin-bottom: 1rem;
-    }
-    & .comment {
-        margin-bottom: 1rem;
-        padding: 1rem;
-        background-color: var(--primary-color);
-        color: black;
-        box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-        & h3 {
-            margin-bottom: 1rem;
-        }
-        & p {
-            margin-bottom: .5rem;
-        }
-        & .info {
-            color: rgba(0, 0, 0, 0.5)
-        }
-    }
-    & form {
-        background-color: var(--secondary-color);
-        margin-bottom: 1rem;
-        padding: 1rem;
-        box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-        & label {
-            display: block;
-            margin-bottom: .5rem;
-            & input, & textarea {
-                width: 100%;
-                padding: .5rem;
-                margin-bottom: 1rem;
-            }
-        }
-
-        & button {
-            background-color: var(--tertiary-color);
-            color: black;
-            padding: .5rem 1rem;
-            border: none;
-            cursor: pointer;
-        }
-
-
-    }
+  }
 }

@@ -1,8 +1,21 @@
-<div class="news_list">
+<div class="cards">
   <% products.forEach((item => { %>
-  <a href="/product/<%= item.slug%>" class="news_item">
-    <span><%= item.name %></span>
-    <img src="images/<%= item.image_url %>" alt="nwsnwsnws" />
-  </a>
+  <div class="card">
+    <img class="card__image" src="images/<%= item.image_url %>" alt="pizza" />
+    <div class="card__content">
+      <h1 class="card__title"><%= item.name %></h1>
+      <p class="card__description"><%= item.description %></p>
+      <p class="card__price">€<%= item.price %></p>
+      <form class="card__actions" action="/edit" method="POST">
+        <input type="hidden" name="productId" value="<%= item.id %>" />
+        <button type="submit" class="card__button">Edit</button>
+        <!-- TODO: Fix actions to go down -->
+        <input type="hidden" name="productId" value="<%= item.id %>" />
+        <button type="submit" class="card__button card__button--danger">
+          Delete
+        </button>
+      </form>
+    </div>
+  </div>
   <% })) %>
 </div>
