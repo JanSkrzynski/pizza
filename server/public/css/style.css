@@ -1,33 +1,30 @@
 :root {
   /* Primary Colors */
-  --color-primary: #2c3e50; /* A dark blue, good for headers, icons, or buttons */
-  --color-primary-light: #34495e; /* A lighter version of the primary color */
+  --color-primary: #2c3e50;
+  --color-primary-light: #34495e;
 
   /* Secondary Colors */
-  --color-secondary: #18bc9c; /* A teal green for accents or action items */
-  --color-secondary-light: #1abc9c;
+  --color-secondary: #18bc9c;
+  --color-secondary-light: #45b8a1;
 
   /* Accent Colors */
-  --color-accent: #f39c12; /* A vibrant orange to highlight important features */
+  --color-accent: #f39c12;
   --color-accent-light: #f1c40f;
 
   /* Danger Colors */
-  --color-danger: #e74c3c; /* A strong red for errors or destructive actions */
-  --color-danger-light: #ff7675; /* A lighter red for hover or background */
-
-  /* Backgrounds & Surfaces */
-  --color-bg: #ecf0f1; /* Light background color for pages or cards */
-  --color-surface: #ffffff; /* Pure white for panels, modals, or forms */
+  --color-danger: #e74c3c;
+  --color-danger-light: #ff7675;
+  --color-bg: #ecf0f1;
+  --color-surface: #ffffff;
 
   /* Text Colors */
-  --color-text: #34495e; /* Dark text for high contrast on light backgrounds */
-  --color-text-muted: #7f8c8d; /* Muted text for less emphasis */
+  --color-text: #34495e;
+  --color-text-muted: #7f8c8d;
 
   /* Border & Dividers */
-  --color-border: #bdc3c7; /* A soft grey for borders and separators */
+  --color-border: #bdc3c7;
 }
 
-/* Example usage */
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
@@ -39,6 +36,44 @@ body {
   background-color: var(--color-primary);
   color: var(--color-surface);
   padding: 1rem;
+}
+
+nav {
+  background-color: var(--color-primary-light);
+  color: var(--color-surface);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .nav__logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-surface);
+    text-decoration: none;
+  }
+
+  .nav__list {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+
+    .nav__link {
+      color: var(--color-surface);
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--color-accent);
+      }
+
+      & .nav__link--active {
+        color: var(--color-accent);
+        font-weight: bold;
+      }
+    }
+  }
 }
 
 .button {
@@ -59,6 +94,7 @@ body {
   margin: 0 auto;
   padding: 1rem;
 }
+
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
