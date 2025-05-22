@@ -1,0 +1,11 @@
+<h1>Orders</h1>
+
+<% if ( orders.length == 0 ) { %>
+
+<p>No new orders</p>
+
+<% } else { %> <% orders.forEach ( (order)=> { %>
+<h3><%= order.id %></h3>
+<p><%= order.status %></p>
+<p>Ordered on <%= order.date %></p>
+<% } ) }%>

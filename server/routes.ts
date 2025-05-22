@@ -1,6 +1,7 @@
 import express, { Request, Response, Router } from "express";
 import path from "path";
 import { getAllProducts, getProductBySlug, Product } from "./services/products";
+import { getAllOrders } from "./services/orders";
 
 const router: Router = express.Router();
 
@@ -14,6 +15,11 @@ router.get("/product/:slug", async (req: Request, res: Response) => {
   const slug = req.params.slug;
   const product: Product = await getProductBySlug(slug);
   res.render("detail", { product: product });
+});
+
+router.get("/orders", async (req: Request, res: Response) => {
+  const orders = await getAllOrders();
+  res.render("orders", { orders });
 });
 
 export default router;
