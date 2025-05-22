@@ -23,3 +23,17 @@ export async function getProductBySlug(slug: string): Promise<Product> {
                         where slug = ${slug} `;
   return products[0];
 }
+
+export async function addProduct(
+  name: string,
+  description: string,
+  price: number,
+  image_url: string,
+  slug: string,
+  category: number
+) {
+  const data = await sql`
+  insert into products (name, price, description, image_url, slug, category)
+  values (${name}, ${price}, ${description}, ${image_url}, ${slug}, ${category})`;
+  return data;
+}
