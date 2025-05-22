@@ -8,9 +8,8 @@
       <h1 class="card__title"><%= item.name %></h1>
       <p class="card__description"><%= item.description %></p>
       <p class="card__price">€<%= item.price %></p>
-      <form class="card__actions" action="/edit" method="POST">
-        <input type="hidden" name="productId" value="<%= item.id %>" />
-        <button type="submit" class="card__button">Edit</button>
+      <form class="card__actions" method="POST">
+        <a class="button" href="/product/<%= item.slug %>">Edit</a>
         <!-- TODO: Fix actions to go down -->
         <input type="hidden" name="productId" value="<%= item.id %>" />
         <button type="submit" class="card__button card__button--danger">

@@ -30,7 +30,7 @@ router.get("/", async (req: Request, res: Response) => {
 router.get("/product/:slug", async (req: Request, res: Response) => {
   const slug = req.params.slug;
   const product: Product = await getProductBySlug(slug);
-  res.render("detail", { product: product });
+  res.render("detail", { product });
 });
 
 router.get("/orders", async (req: Request, res: Response) => {

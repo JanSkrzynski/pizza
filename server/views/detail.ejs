@@ -1,49 +1,8 @@
-<div class="news_detail">
-  <h1><%= product.name %></h1>
-  <div class="image">
-    <img src="/images/<%= product.image_url %>" alt="nwsnwsnws" />
-  </div>
-  <p><%= product.description %></p>
-
-  <div class="comments_list">
-    <h2>Reacties</h2>
-    <form>
-      <label>
-        Jouw naam<br />
-        <input type="text" name="info" id="info" placeholder="Jouw naam" />
-      </label>
-      <label>
-        Jouw reactie<br />
-        <textarea
-          name="comment"
-          id="comment"
-          cols="30"
-          rows="4"
-          placeholder="Plaats jouw reactie..."
-        ></textarea>
-      </label>
-      <button type="submit">Reactie plaatsen</button>
-    </form>
-    <div class="comment">
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod,
-        voluptates, quae, quibusdam quia quos
-      </p>
-      <div class="info">Jantje &bull; 3 maart 2024 19:35</div>
-    </div>
-    <div class="comment">
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod,
-        voluptates, quae, quibusdam quia quos
-      </p>
-      <div class="info">Klaasje &bull; 3 maart 2024 9:17</div>
-    </div>
-    <div class="comment">
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod,
-        voluptates, quae, quibusdam quia quos
-      </p>
-      <div class="info">Pietje &bull; 1 maart 2024 14:54</div>
-    </div>
+<div class="card">
+  <img class="card__image" src="/images/<%= product.image_url %>" alt="pizza" />
+  <div class="card__content">
+    <h1 class="card__title"><%= product.name %></h1>
+    <p class="card__description"><%= product.description %></p>
+    <p class="card__price">€<%= product.price %></p>
   </div>
 </div>
