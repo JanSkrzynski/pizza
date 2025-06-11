@@ -30,10 +30,10 @@ export async function addProduct(
   price: number,
   image_url: string,
   slug: string,
-  category: number
+  category_id: number
 ) {
   const data = await sql`
   insert into products (name, price, description, image_url, slug, category)
-  values (${name}, ${price}, ${description}, ${image_url}, ${slug}, ${category})`;
+  values (${name}, ${price}, ${description}, ${image_url}, ${slug}, ${category_id})`;
   return data;
 }

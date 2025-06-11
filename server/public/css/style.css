@@ -83,6 +83,7 @@ nav {
   border-radius: 4px;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  text-decoration: none;
   transition: background-color 0.3s ease;
 }
 
@@ -144,11 +145,6 @@ nav {
 
         &.card__button--danger {
           background-color: var(--color-danger);
-          color: var(--color-surface);
-          border: none;
-          padding: 0.5rem 1rem;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
 
           &:hover {
             background-color: var(--color-danger-light);
