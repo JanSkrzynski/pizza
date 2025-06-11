@@ -1,7 +1,7 @@
 <a class="button" href="/add">+</a>
 
 <div class="cards">
-  <% products.forEach((item => { %>
+  <% products.forEach(item => { %>
   <div class="card">
     <img class="card__image" src="images/<%= item.image_url %>" alt="pizza" />
     <div class="card__content">
@@ -9,8 +9,10 @@
       <p class="card__description"><%= item.description %></p>
       <p class="card__price">€<%= item.price %></p>
       <form class="card__actions" method="POST">
-        <a class="button" href="/product/<%= item.slug %>">Edit</a>
-        <!-- TODO: Fix actions to go down -->
+        <!-- EDIT button now points to your /edit/:slug route -->
+        <a class="button" href="/edit/<%= item.slug %>">Edit</a>
+
+        <!-- your delete button stays here -->
         <input type="hidden" name="productId" value="<%= item.id %>" />
         <button type="submit" class="card__button card__button--danger">
           Delete
@@ -18,5 +20,5 @@
       </form>
     </div>
   </div>
-  <% })) %>
+  <% }) %>
 </div>

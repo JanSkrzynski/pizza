@@ -38,3 +38,26 @@ export async function addProduct(
   values (${name}, ${price}, ${description}, ${image_url}, ${slug}, ${category_id})`;
   return data;
 }
+
+export async function updateProduct(
+  id: number,
+  name: string,
+  description: string | null,
+  price: number,
+  image_url: string | null,
+  slug: string,
+  category_id: number
+): Promise<Product> {
+  const [row] = await sql<Product[]>`
+    UPDATE products
+       SET name        = ${name},
+           description = ${description},
+           price       = ${price},
+           image_url   = ${image_url},
+           slug        = ${slug},
+           category_id = ${category_id}
+     WHERE id = ${id}
+    RETURNING *;
+  `;
+  return row;
+}

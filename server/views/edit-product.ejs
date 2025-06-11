@@ -1,0 +1,40 @@
+<form method="post" action="/edit/product" class="form">
+  <input type="hidden" name="id" value="<%= product.id %>" />
+
+  <label>Name:</label>
+  <input type="text" name="name" value="<%= product.name %>" required />
+
+  <label>Description:</label>
+  <input type="text" name="description" value="<%= product.description %>" />
+
+  <label>Price (€):</label>
+  <input
+    type="number"
+    name="price"
+    step="0.01"
+    min="0"
+    value="<%= product.price %>"
+    required
+  />
+
+  <label>Image URL:</label>
+  <input type="text" name="image_url" value="<%= product.image_url %>" />
+
+  <label>Slug:</label>
+  <input type="text" name="slug" value="<%= product.slug %>" required />
+
+  <label>Category:</label>
+  <select name="category_id" required>
+    <% categories.forEach((cat) => { %>
+      <option
+        value="<%= cat.id %>"
+        <%= cat.id === product.category_id ? "selected" : "" %>
+      >
+        <%= cat.name %>
+      </option>
+    <% }); %>
+  </select>
+
+  <button type="submit">Save Changes</button>
+</form>
+<a class="button" href="/">Back to Products</a>
