@@ -8,13 +8,23 @@
       <h1 class="card__title"><%= item.name %></h1>
       <p class="card__description"><%= item.description %></p>
       <p class="card__price">€<%= item.price %></p>
-      <form class="card__actions" method="POST">
-        <!-- EDIT button now points to your /edit/:slug route -->
+      <form
+        class="card__actions"
+        method="POST"
+        action="/delete/product"
+        <!--
+        ←
+        here!
+        --
+      >
         <a class="button" href="/edit/<%= item.slug %>">Edit</a>
 
-        <!-- your delete button stays here -->
         <input type="hidden" name="productId" value="<%= item.id %>" />
-        <button type="submit" class="card__button card__button--danger">
+        <button
+          type="submit"
+          class="card__button card__button--danger"
+          onclick="return confirm('Delete this product?');"
+        >
           Delete
         </button>
       </form>

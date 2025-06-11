@@ -5,6 +5,7 @@ import {
   getAllProducts,
   getProductBySlug,
   updateProduct,
+  deleteProduct,
   Product,
 } from "./services/products";
 import { getAllCategories, Category } from "./services/categories";
@@ -95,6 +96,26 @@ router.post(
     } catch (err) {
       console.error("editProduct error:", err);
       res.status(500).send("Failed to edit product: " + (err as Error).message);
+    }
+  }
+);
+
+//Deleting product
+router.post(
+  "/delete/product",
+  async (req: Request, res: Response): Promise<void> => {
+    const idNum = parseInt(req.body.productId, 10);
+    if (isNaN(idNum)) {
+      res.status(400).send("Invalid product ID");
+      return;
+    }
+
+    try {
+      await deleteProduct(idNum);
+      res.redirect("/"); // back to home list
+    } catch (err) {
+      console.error("deleteProduct error:", err);
+      res.status(500).send("Failed to delete product");
     }
   }
 );

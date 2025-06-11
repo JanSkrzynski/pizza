@@ -61,3 +61,10 @@ export async function updateProduct(
   `;
   return row;
 }
+
+export async function deleteProduct(id: number): Promise<void> {
+  await sql`
+    DELETE FROM products
+     WHERE id = ${id};
+  `;
+}
