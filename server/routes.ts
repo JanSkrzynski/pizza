@@ -6,6 +6,7 @@ import {
   getProductBySlug,
   Product,
 } from "./services/products";
+import { getAllCategories, Category } from "./services/categories";
 import { getAllOrders } from "./services/orders";
 
 const router: Router = express.Router();
@@ -16,48 +17,41 @@ router.get("/", async (req: Request, res: Response) => {
   res.render("home", { name, products });
 });
 
-// router.post("/", async (req: Request, res: Response) => {
-//   const products: Product[] = await getAllProducts();
-//   const { name, description, price, image_url, slug, category } = req.body;
-//   //toevoegen.
-//   // const data = await addProduct();
-//   console.log(products[0].name);
-
-//   //pagina renderen of terug keren naat get request van pagina
-//   res.redirect(`./detail/${slug}`);
-// });
-
 // Adding a new product
-router.get("/add", (req: Request, res: Response) => {
-  res.render("add-product");
+router.get("/add", async (req: Request, res: Response) => {
+  const categories: Category[] = await getAllCategories();
+  res.render("add-product", { categories });
 });
 
-router.post("/add/product", async (req: Request, res: Response) => {
-  const { name, description, price, image_url, slug, category_id } = req.body;
-  const categoryNum = parseInt(category_id, 10);
-  try {
-    await addProduct(name, description, price, image_url, slug, categoryNum);
-    res.redirect(`/product/${slug}`);
-  } catch (error) {
-    res.status(500).send("Failed to add product");
+router.post(
+  "/add/product",
+  async (req: Request, res: Response): Promise<void> => {
+    const { name, description, price, image_url, slug, category_id } = req.body;
+    const priceNum = parseFloat(price);
+    const categoryNum = parseInt(category_id, 10);
+
+    try {
+      await addProduct(
+        name,
+        description || null,
+        priceNum,
+        image_url || null,
+        slug,
+        categoryNum
+      );
+      res.redirect(`/product/${slug}`);
+    } catch (err) {
+      console.error("addProduct error:", err);
+      res.status(500).send("Failed to add product: " + (err as Error).message);
+    }
   }
-});
+);
 
 router.get("/product/:slug", async (req: Request, res: Response) => {
   const slug = req.params.slug;
   const product: Product = await getProductBySlug(slug);
   res.render("detail", { product });
 });
-
-// router.post("/product/add", async (req: Request, res: Response) => {
-//   const { name, description, price, image_url, slug, category } = req.body;
-//   try {
-//     await addProduct(name, description, price, image_url, slug, category);
-//     res.redirect(`/product/${slug}`);
-//   } catch (error) {
-//     res.status(500).send("Failed to add product");
-//   }
-// });
 
 router.get("/orders", async (req: Request, res: Response) => {
   const orders = await getAllOrders();

@@ -8,6 +8,7 @@ export interface Product {
   desciption?: string;
   image_url?: string;
   created_at: string;
+  category_id: number;
 }
 
 export async function getAllProducts(): Promise<Product[]> {
@@ -33,7 +34,7 @@ export async function addProduct(
   category_id: number
 ) {
   const data = await sql`
-  insert into products (name, price, description, image_url, slug, category)
+  insert into products (name, price, description, image_url, slug, category_id)
   values (${name}, ${price}, ${description}, ${image_url}, ${slug}, ${category_id})`;
   return data;
 }
