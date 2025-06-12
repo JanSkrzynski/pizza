@@ -9,7 +9,7 @@ import {
   getProductsByCategory,
 } from "./services/products";
 import { getAllCategories } from "./services/categories";
-import { createOrder, getAllOrders, getOrderById } from "./services/orders";
+import { createOrder } from "./services/orders";
 
 const apiRouter: Router = express.Router();
 

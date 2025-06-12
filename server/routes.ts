@@ -7,10 +7,15 @@ import {
   updateProduct,
   deleteProduct,
   Product,
-  getProductsByCategory,
 } from "./services/products";
 import { getAllCategories, Category } from "./services/categories";
-import { Order, getAllOrders, getOrderById } from "./services/orders";
+import {
+  Order,
+  OrderWithProducts,
+  getAllOrders,
+  getAllOrdersWithProducts,
+  getOrderByIdWithProducts,
+} from "./services/orders";
 
 const router: Router = express.Router();
 
@@ -120,27 +125,22 @@ router.post(
 
 // Getting all orders
 
-router.get("/orders", async (req: Request, res: Response) => {
-  const orders = await getAllOrders();
+router.get("/orders/", async (req: Request, res: Response) => {
+  let orders: OrderWithProducts[] = await getAllOrdersWithProducts();
+  orders = orders.sort((a, b) => {
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
   res.render("orders", { orders });
 });
 
-router.get("/orders/:id", async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
-  const order = await getOrderById(id);
-
-  if (!order) {
-    res.status(404).send("Order not found");
-    return;
+router.get(
+  "/orders/:id",
+  async (req: Request, res: Response): Promise<any> => {
+    const id = parseInt(req.params.id, 10);
+    const order = await getOrderByIdWithProducts(id);
+    if (!order) return res.status(404).send("Order not found");
+    res.render("order-detail", { order });
   }
-
-  res.render("order-detail", { order });
-});
-
-router.get("/product/:slug", async (req: Request, res: Response) => {
-  const slug = req.params.slug;
-  const product: Product = await getProductBySlug(slug);
-  res.render("detail", { product });
-});
+);
 
 export default router;
