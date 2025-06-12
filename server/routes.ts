@@ -15,6 +15,9 @@ import {
   getAllOrders,
   getAllOrdersWithProducts,
   getOrderByIdWithProducts,
+  getThisMonthOrderCount,
+  getThisYearRevenue,
+  getTodayOrderCount,
 } from "./services/orders";
 
 const router: Router = express.Router();
@@ -142,5 +145,18 @@ router.get(
     res.render("order-detail", { order });
   }
 );
+
+// dashboard
+router.get("/dashboard", async (_req: Request, res: Response) => {
+  try {
+    const todayCount = await getTodayOrderCount();
+    const monthCount = await getThisMonthOrderCount();
+    const yearRevenue = await getThisYearRevenue();
+    res.render("dashboard", { todayCount, monthCount, yearRevenue });
+  } catch (err) {
+    console.error("Dashboard error:", err);
+    res.status(500).send("Failed to load dashboard");
+  }
+});
 
 export default router;

@@ -1,0 +1,31 @@
+
+<title>Dashboard</title>
+  <style>
+    .dashboard { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
+    .stat { background: #f4f4f4; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+    .stat h2 { margin: 0 0 .5rem; font-size: 1.25rem; }
+    .stat p { font-size: 2rem; margin: 0; }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h1>Dashboard</h1>
+
+    <div class="stat">
+      <h2>Orders Today</h2>
+      <p><%= todayCount %></p>
+    </div>
+
+    <div class="stat">
+      <h2>Orders This Month</h2>
+      <p><%= monthCount %></p>
+    </div>
+
+    <div class="stat">
+      <h2>Revenue This Year</h2>
+      <p>€<%= yearRevenue.toFixed(2) %></p>
+    </div>
+
+    <p><a href="/orders">View All Orders</a></p>
+    <p><a href="/">← Back to Home</a></p>
+  </div>

@@ -149,3 +149,34 @@ export async function createOrder(productIds: number[]): Promise<Order> {
 
   return order;
 }
+
+export async function getTodayOrderCount(): Promise<number> {
+  // PostgreSQL returns COUNT as text, so we parse it
+  const [{ count }] = await sql<{ count: string }[]>`
+    SELECT COUNT(*) AS count
+      FROM orders
+     WHERE created_at::DATE = now()::DATE;
+  `;
+  return parseInt(count, 10);
+}
+
+export async function getThisMonthOrderCount(): Promise<number> {
+  // COUNT returns text, so parse it
+  const [{ count }] = await sql<{ count: string }[]>`
+    SELECT COUNT(*) AS count
+      FROM orders
+     WHERE date_trunc('month', created_at) = date_trunc('month', now());
+  `;
+  return parseInt(count, 10);
+}
+
+export async function getThisYearRevenue(): Promise<number> {
+  const [{ total }] = await sql<{ total: string }[]>`
+    SELECT
+      COALESCE(SUM(op.price * op.quantity), 0)::TEXT AS total
+    FROM order_products op
+    JOIN orders o ON o.id = op.order_id
+    WHERE date_trunc('year', o.created_at) = date_trunc('year', now());
+  `;
+  return parseFloat(total);
+}
