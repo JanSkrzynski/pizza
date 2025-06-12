@@ -26,29 +26,26 @@ router.get("/add", async (req: Request, res: Response) => {
   res.render("add-product", { categories });
 });
 
-router.post(
-  "/add/product",
-  async (req: Request, res: Response): Promise<void> => {
-    const { name, description, price, image_url, slug, category_id } = req.body;
-    const priceNum = parseFloat(price);
-    const categoryNum = parseInt(category_id, 10);
+router.post("/add/product", async (req: Request, res: Response) => {
+  const { name, description, price, image_url, slug, category_id } = req.body;
+  const priceNum = parseFloat(price);
+  const categoryNum = parseInt(category_id, 10);
 
-    try {
-      await addProduct(
-        name,
-        description || null,
-        priceNum,
-        image_url || null,
-        slug,
-        categoryNum
-      );
-      res.redirect(`/product/${slug}`);
-    } catch (err) {
-      console.error("addProduct error:", err);
-      res.status(500).send("Failed to add product: " + (err as Error).message);
-    }
+  try {
+    await addProduct(
+      name,
+      description || null,
+      priceNum,
+      image_url || null,
+      slug,
+      categoryNum
+    );
+    res.redirect(`/product/${slug}`);
+  } catch (err) {
+    console.error("addProduct error:", err);
+    res.status(500).send("Failed to add product: " + (err as Error).message);
   }
-);
+});
 
 //Getting one product by slug
 router.get("/product/:slug", async (req: Request, res: Response) => {
