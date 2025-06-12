@@ -9,7 +9,7 @@ import {
   Product,
 } from "./services/products";
 import { getAllCategories, Category } from "./services/categories";
-import { getAllOrders } from "./services/orders";
+import { Order, getAllOrders, getOrderById } from "./services/orders";
 
 const router: Router = express.Router();
 
@@ -122,6 +122,24 @@ router.post(
 router.get("/orders", async (req: Request, res: Response) => {
   const orders = await getAllOrders();
   res.render("orders", { orders });
+});
+
+router.get("/orders/:id", async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id, 10);
+  const order = await getOrderById(id);
+
+  if (!order) {
+    res.status(404).send("Order not found");
+    return;
+  }
+
+  res.render("order-detail", { order });
+});
+
+router.get("/product/:slug", async (req: Request, res: Response) => {
+  const slug = req.params.slug;
+  const product: Product = await getProductBySlug(slug);
+  res.render("detail", { product });
 });
 
 export default router;
