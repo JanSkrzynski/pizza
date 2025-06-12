@@ -7,6 +7,7 @@ import {
   updateProduct,
   deleteProduct,
   Product,
+  getProductsByCategory,
 } from "./services/products";
 import { getAllCategories, Category } from "./services/categories";
 import { Order, getAllOrders, getOrderById } from "./services/orders";
@@ -140,6 +141,47 @@ router.get("/product/:slug", async (req: Request, res: Response) => {
   const slug = req.params.slug;
   const product: Product = await getProductBySlug(slug);
   res.render("detail", { product });
+});
+
+// GET /api/categories
+router.get("/categories", async (req: Request, res: Response) => {
+  const categories = await getAllCategories();
+  res.json(categories);
+});
+
+router.get(
+  "api/products",
+  async (req: Request, res: Response): Promise<any> => {
+    try {
+      const catQ = req.query.category as string | undefined;
+      let products: Product[];
+
+      if (catQ !== undefined) {
+        const categoryId = parseInt(catQ, 10);
+        if (isNaN(categoryId)) {
+          return res
+            .status(400)
+            .json({ error: "Invalid category query parameter" });
+        }
+        products = await getProductsByCategory(categoryId);
+      } else {
+        products = await getAllProducts();
+      }
+
+      res.json(products);
+    } catch (err) {
+      console.error("GET /api/products error:", err);
+      res.status(500).json({ error: "Failed to fetch products" });
+    }
+  }
+);
+
+// GET /api/products/:slug
+router.get("api/products/:slug", async (req: Request, res: Response) => {
+  const slug = req.params.slug;
+  const allProducts: Product[] = await getAllProducts();
+  const product = allProducts.find((p) => p.slug === slug);
+  res.json(product);
 });
 
 export default router;

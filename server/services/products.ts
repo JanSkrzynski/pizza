@@ -24,6 +24,17 @@ export async function getProductBySlug(slug: string): Promise<Product> {
                         where slug = ${slug} `;
   return products[0];
 }
+export async function getProductsByCategory(
+  categoryId: number
+): Promise<Product[]> {
+  const products: Product[] = await sql<Product[]>`
+    SELECT *
+      FROM products
+     WHERE category_id = ${categoryId}
+     ORDER BY created_at;
+  `;
+  return products;
+}
 
 export async function addProduct(
   name: string,
