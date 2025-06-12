@@ -144,13 +144,13 @@ router.get("/product/:slug", async (req: Request, res: Response) => {
 });
 
 // GET /api/categories
-router.get("/categories", async (req: Request, res: Response) => {
+router.get("/api/categories", async (req: Request, res: Response) => {
   const categories = await getAllCategories();
   res.json(categories);
 });
 
 router.get(
-  "api/products",
+  "/api/products",
   async (req: Request, res: Response): Promise<any> => {
     try {
       const catQ = req.query.category as string | undefined;
