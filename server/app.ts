@@ -3,6 +3,7 @@ import path from "path";
 import router from "./routes";
 import expressLayouts from "express-ejs-layouts";
 import rateLimit from "express-rate-limit";
+import apiRouter from "./apiRouter";
 
 const app: Application = express();
 const PORT: number = 3000;
@@ -17,6 +18,7 @@ const limiter = rateLimit({
 
 //Middleware om onze post request in de body te encoderen
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 //Template-engine configureren
 app.set("view engine", "ejs");
@@ -29,6 +31,7 @@ app.set("layout", "layouts/main");
 app.use(express.static(path.join(__dirname, "/public")));
 
 app.use("/", router);
+app.use("/api", apiRouter);
 
 app.listen(PORT, () => {
   console.log(`server is running on http://localhost:${PORT}`);
