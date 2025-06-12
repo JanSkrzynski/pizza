@@ -117,6 +117,8 @@ router.post(
   }
 );
 
+// Getting all orders
+
 router.get("/orders", async (req: Request, res: Response) => {
   const orders = await getAllOrders();
   res.render("orders", { orders });
