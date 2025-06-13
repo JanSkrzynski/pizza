@@ -56,8 +56,8 @@ router.post("/login", async (req: Request, res: Response) => {
     return res.render("login", { error: "Invalid email or password." });
   }
   // Store user ID in session
-  req.session.userId = Number(user.id);
-  req.session.role = user.role;
+  (req.session as any).userId = user.id;
+  (req.session as any).role = user.role;
   res.redirect("/");
 });
 

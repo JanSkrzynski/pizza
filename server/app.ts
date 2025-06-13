@@ -42,6 +42,17 @@ console.log("Database URL:", process.env.DATABASE_URL);
 console.log("Session Secret:", process.env.SESSION_SECRET);
 console.log("cwd:", process.cwd());
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "your-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    },
+  })
+);
+
 // // Create a plain pg.Pool for sessions
 // const pgPool = new Pool({
 //   connectionString: process.env.DATABASE_URL,
