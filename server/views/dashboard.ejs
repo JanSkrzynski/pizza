@@ -1,29 +1,37 @@
-
-<title>Dashboard</title>
-  <style>
-    .dashboard { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
-    .stat { background: #f4f4f4; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
-    .stat h2 { margin: 0 0 .5rem; font-size: 1.25rem; }
-    .stat p { font-size: 2rem; margin: 0; }
-  </style>
-</head>
-<body>
- <div class="stat">
-  <h2>Total Orders Today</h2>
-  <p><%= todayCount %></p>
-</div>
-
-<div class="stat">
-  <h2>Pending Orders Today</h2>
-  <p><%= todayPendingCount %></p>
-</div>
-
-<div class="stat">
-  <h2>Orders This Month</h2>
-  <p><%= monthCount %></p>
-</div>
-
-<div class="stat">
-  <h2>Revenue This Year</h2>
-  <p>€<%= yearRevenue.toFixed(2) %></p>
+<div class="container py-5">
+  <h1 class="mb-4 text-danger">Dashboard</h1>
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-3">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Total Orders Today</h5>
+          <p class="display-6 mb-0"><%= todayCount %></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Pending Orders Today</h5>
+          <p class="display-6 mb-0"><%= todayPendingCount %></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Orders This Month</h5>
+          <p class="display-6 mb-0"><%= monthCount %></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Revenue This Year</h5>
+          <p class="display-6 mb-0">€<%= yearRevenue.toFixed(2) %></p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
