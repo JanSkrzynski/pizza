@@ -1,49 +1,66 @@
 <header>
-  <nav class="nav">
-    <div class="nav__logo">Pizza Place</div>
-
-    <% if (email) { %>
-    <div class="nav__greeting">Welcome back, <%= email %>!</div>
-    <% } %>
-
-    <ul class="nav__list">
-      <% if (!userId) { %>
-      <!-- Guest -->
-      <li class="nav__item"><a class="nav__link" href="/login">Login</a></li>
-      <li class="nav__item">
-        <a class="nav__link" href="/register">Register</a>
-      </li>
-      <% } else { %>
-      <!-- Logged-in user -->
-      <li class="nav__item">
-        <a class="nav__link" href="/orders">My Orders</a>
-      </li>
-      <li class="nav__item">
-        <a class="nav__link" href="/orders/add">Place Order</a>
-      </li>
-
-      <% if (role === 'admin') { %>
-      <!-- Admin only -->
-      <li class="nav__item">
-        <a class="nav__link" href="/products">Manage Products</a>
-      </li>
-      <li class="nav__item">
-        <a class="nav__link" href="/categories">Manage Categories</a>
-      </li>
-      <li class="nav__item">
-        <a class="nav__link" href="/users">Manage Users</a>
-      </li>
-      <li class="nav__item">
-        <a class="nav__link" href="/orders/all">All Orders</a>
-      </li>
-      <% } %>
-
-      <li class="nav__item">
-        <form action="/logout" method="POST" style="display: inline">
-          <button class="nav__link" type="submit">Logout</button>
-        </form>
-      </li>
-      <% } %>
-    </ul>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Pizza Place</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navMenu"
+        aria-controls="navMenu"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="/products">Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/categories">Categories</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/orders">Orders</a>
+          </li>
+          <% if (!userId) { %>
+          <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>
+          <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/orders">My Orders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/orders/add">Place Order</a>
+          </li>
+          <% if (role === 'admin') { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/products">Manage Products</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/categories">Manage Categories</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/users">Manage Users</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/orders/all">All Orders</a>
+          </li>
+          <% } %>
+          <li class="nav-item">
+            <form action="/logout" method="POST" class="d-inline">
+              <button class="nav-link btn btn-link" type="submit">
+                Logout
+              </button>
+            </form>
+          </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
   </nav>
 </header>
