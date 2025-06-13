@@ -13,6 +13,7 @@ import { getAllCategories, Category, addCategory } from "./services/categories";
 import {
   Order,
   OrderWithProducts,
+  createOrder,
   getAllOrders,
   getAllOrdersWithProducts,
   getOrderByIdWithProducts,
@@ -21,6 +22,7 @@ import {
   getTodayOrderCount,
   getTodayPendingOrderCount,
 } from "./services/orders";
+import { get } from "http";
 
 const router: Router = express.Router();
 
@@ -165,6 +167,75 @@ router.get(
     const order = await getOrderByIdWithProducts(id);
     if (!order) return res.status(404).send("Order not found");
     res.render("order-detail", { order });
+  }
+);
+
+// 1️⃣ List all orders
+router.get("/orders/", async (_req, res) => {
+  const orders: OrderWithProducts[] = await getAllOrdersWithProducts();
+  res.render("orders", { orders });
+});
+
+// 2️⃣ Order detail
+router.get(
+  "/orders/:id",
+  async (req, res): Promise<any> => {
+    const id = parseInt(req.params.id, 10);
+    const order = await getOrderByIdWithProducts(id);
+    if (!order) return res.status(404).send("Order not found");
+    res.render("order-detail", { order });
+  }
+);
+
+// 3️⃣ Show “Place Order” form
+router.get("/orders/add/new", async (req, res) => {
+  // fetch products to choose from
+  const products: Product[] = await getAllProducts();
+  res.render("add-order", { products });
+});
+
+// 4️⃣ Handle form submission
+router.post(
+  "/orders/add/new",
+  async (req, res): Promise<any> => {
+    try {
+      // req.body.products will be an object like:
+      // { '0': { id: '1', quantity: '2' }, '1': { id: '5', quantity: '1' }, ... }
+      const productsField = req.body.products;
+      if (!productsField || typeof productsField !== "object") {
+        return res.status(400).send("You must select at least one product");
+      }
+
+      // Turn into an array of { id, quantity }
+      const items = Object.values(productsField).map((item: any) => ({
+        id: parseInt(item.id, 10),
+        quantity: parseInt(item.quantity, 10),
+      }));
+
+      // Filter out invalid entries
+      const validItems = items.filter(
+        (it) =>
+          !isNaN(it.id) && it.id > 0 && !isNaN(it.quantity) && it.quantity > 0
+      );
+
+      if (validItems.length === 0) {
+        return res.status(400).send("You must select at least one product");
+      }
+
+      // If you only support quantity=1 for now, extract IDs:
+      const ids = validItems.map((it) => it.id);
+
+      // Call your existing createOrder (which sets quantity=1)
+      await createOrder(ids);
+
+      // Or, if you’ve extended createOrder to accept quantities:
+      // await createOrderWithQuantities(validItems);
+
+      res.redirect("/orders");
+    } catch (err) {
+      console.error("createOrder error:", err);
+      res.status(500).send("Failed to place order: " + (err as Error).message);
+    }
   }
 );
 

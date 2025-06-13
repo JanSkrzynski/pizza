@@ -1,0 +1,53 @@
+<h1>Place New Order</h1>
+<form action="/orders/add/new" method="POST" id="order-form">
+  <div id="products-wrapper">
+    <div class="order-row">
+      <select name="products[0][id]" required>
+        <% products.forEach(p => { %>
+        <option value="<%= p.id %>"><%= p.name %> (€<%= p.price %>)</option>
+        <% }) %>
+      </select>
+      <input
+        type="number"
+        name="products[0][quantity]"
+        value="1"
+        min="1"
+        step="1"
+        required
+      />
+      <button type="button" class="remove-button" onclick="removeRow(this)">
+        −
+      </button>
+    </div>
+  </div>
+  <button type="button" class="add-button" onclick="addRow()">
+    + Add Product
+  </button>
+  <br /><br />
+  <button type="submit">Place Order</button>
+</form>
+
+<script>
+  let index = 1;
+  function addRow() {
+    const wrapper = document.getElementById("products-wrapper");
+    const firstRow = wrapper.querySelector(".order-row");
+    const newRow = firstRow.cloneNode(true);
+    // update names
+    newRow.querySelector("select").name = `products[${index}][id]`;
+    newRow.querySelector("input").name = `products[${index}][quantity]`;
+    newRow.querySelector("select").value =
+      firstRow.querySelector("select").value;
+    newRow.querySelector("input").value = 1;
+    wrapper.appendChild(newRow);
+    index++;
+  }
+
+  function removeRow(button) {
+    const wrapper = document.getElementById("products-wrapper");
+    const rows = wrapper.querySelectorAll(".order-row");
+    if (rows.length > 1) {
+      button.parentNode.remove();
+    }
+  }
+</script>

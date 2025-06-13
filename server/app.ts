@@ -1,3 +1,4 @@
+// import { cookieParser } from "cookie-parser";
 import express, { Application, Request, Response } from "express";
 import path from "path";
 import router from "./routes";
@@ -15,6 +16,7 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+app.use(limiter);
 
 //Middleware om onze post request in de body te encoderen
 app.use(express.urlencoded({ extended: true }));
@@ -36,3 +38,20 @@ app.use("/api", apiRouter);
 app.listen(PORT, () => {
   console.log(`server is running on http://localhost:${PORT}`);
 });
+
+// app.use(cookieParser());
+// app.use(express.urlencoded({ extended: true }));
+
+// app.use(
+//   session({
+//     secret: "your-secret-key",
+//     resave: false,
+//     saveUninitialized: true,
+//   })
+// );
+
+// app.use(csrf({ cookie: true }));
+// app.use((req: Request, res: Response, next: Function) => {
+//   res.locals.csrfToken = req.csrfToken();
+//   next();
+// });
