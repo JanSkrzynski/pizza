@@ -1,14 +1,37 @@
 <h1>Categories</h1>
+
+<a href="/categories/add" class="add-button">+ Add New Category</a>
+
 <% if (categories.length === 0) { %>
-<p>No categories yet.</p>
+<p>No categories found.</p>
 <% } else { %>
 <ul>
   <% categories.forEach(cat => { %>
   <li>
-    <%= cat.name %> (added <%= new Date(cat.created_at).toLocaleDateString() %>)
+    <span><%= cat.name %></span>
+    <span class="actions">
+      <a href="/categories/edit/<%= cat.id %>"
+        ><button type="button" class="action-button edit-button">
+          Edit
+        </button></a
+      >
+      <form
+        action="/categories/delete/<%= cat.id %>"
+        method="POST"
+        style="display: inline"
+      >
+        <button
+          type="submit"
+          class="action-button delete-button"
+          onclick="return confirm('Delete this category?');"
+        >
+          Delete
+        </button>
+      </form>
+    </span>
   </li>
-  <% }) %>
+  <% }); %>
 </ul>
 <% } %>
-<p><a href="/categories/add">+ Add New Category</a></p>
-<p><a href="/">← Back to Home</a></p>
+
+<p><a href="/">← Back to Dashboard</a></p>

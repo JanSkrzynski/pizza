@@ -1,10 +1,9 @@
 // import { cookieParser } from "cookie-parser";
 import express, { Application, Request, Response } from "express";
 import path from "path";
-import router from "./routes";
+import indexRouter from "./routes";
 import expressLayouts from "express-ejs-layouts";
 import rateLimit from "express-rate-limit";
-import apiRouter from "./apiRouter";
 
 const app: Application = express();
 const PORT: number = 3000;
@@ -32,8 +31,7 @@ app.set("layout", "layouts/main");
 
 app.use(express.static(path.join(__dirname, "/public")));
 
-app.use("/", router);
-app.use("/api", apiRouter);
+app.use("/", indexRouter);
 
 app.listen(PORT, () => {
   console.log(`server is running on http://localhost:${PORT}`);

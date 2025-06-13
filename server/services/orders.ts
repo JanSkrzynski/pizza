@@ -150,6 +150,19 @@ export async function createOrder(productIds: number[]): Promise<Order> {
   return order;
 }
 
+export async function updateOrderStatus(
+  orderId: number,
+  status: string
+): Promise<Order> {
+  const [row] = await sql<Order[]>`
+    UPDATE orders
+       SET status = ${status}
+     WHERE id = ${orderId}
+    RETURNING *;
+  `;
+  return row;
+}
+
 export async function getTodayOrderCount(): Promise<number> {
   // PostgreSQL returns COUNT as text, so we parse it
   const [{ count }] = await sql<{ count: string }[]>`
@@ -168,7 +181,7 @@ export async function getTodayPendingOrderCount(): Promise<number> {
     SELECT COUNT(*) AS count
       FROM orders
      WHERE created_at::DATE = now()::DATE
-       AND status != 'completed';
+       AND status = 'pending';   -- only true pending orders
   `;
   return parseInt(count, 10);
 }
@@ -189,7 +202,9 @@ export async function getThisYearRevenue(): Promise<number> {
       COALESCE(SUM(op.price * op.quantity), 0)::TEXT AS total
     FROM order_products op
     JOIN orders o ON o.id = op.order_id
-    WHERE date_trunc('year', o.created_at) = date_trunc('year', now());
+    WHERE
+      date_trunc('year', o.created_at) = date_trunc('year', now())
+      AND o.status = 'completed';   -- only completed orders
   `;
   return parseFloat(total);
 }

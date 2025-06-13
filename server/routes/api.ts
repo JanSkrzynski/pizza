@@ -7,9 +7,9 @@ import {
   deleteProduct,
   Product,
   getProductsByCategory,
-} from "./services/products";
-import { getAllCategories } from "./services/categories";
-import { createOrder } from "./services/orders";
+} from "../services/products";
+import { getAllCategories } from "../services/categories";
+import { createOrder } from "../services/orders";
 
 const apiRouter: Router = express.Router();
 
