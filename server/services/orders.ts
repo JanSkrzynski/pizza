@@ -1,4 +1,7 @@
+// server/services/orders.ts
 import sql from "./db";
+
+// ————— Types —————
 
 export interface OrderedProduct {
   product_id: number;
@@ -9,6 +12,7 @@ export interface OrderedProduct {
 
 export interface OrderWithProducts {
   id: number;
+  user_id: string;
   created_at: string;
   status: string;
   products: OrderedProduct[];
@@ -16,24 +20,27 @@ export interface OrderWithProducts {
 
 export interface Order {
   id: number;
+  user_id: string;
   created_at: string;
   status: string;
 }
 
-// Fetch basic list of orders
+// ————— Fetchers —————
+
+/** 1) All orders (admin) without product details */
 export async function getAllOrders(): Promise<Order[]> {
-  const orders: Order[] = await sql<Order[]>`
+  return await sql<Order[]>`
     SELECT * FROM orders
     ORDER BY created_at DESC;
   `;
-  return orders;
 }
 
-// Fetch detailed orders including products
+/** 2) All orders with products (admin) */
 export async function getAllOrdersWithProducts(): Promise<OrderWithProducts[]> {
   const rows = await sql<
     {
       order_id: number;
+      user_id: string;
       created_at: string;
       status: string;
       product_id: number;
@@ -44,6 +51,7 @@ export async function getAllOrdersWithProducts(): Promise<OrderWithProducts[]> {
   >`
     SELECT
       o.id           AS order_id,
+      o.user_id      AS user_id,
       o.created_at,
       o.status,
       p.id           AS product_id,
@@ -56,35 +64,35 @@ export async function getAllOrdersWithProducts(): Promise<OrderWithProducts[]> {
     ORDER BY o.created_at DESC;
   `;
 
-  // Group rows into orders with products
   const map: Record<number, OrderWithProducts> = {};
-  for (const row of rows) {
-    if (!map[row.order_id]) {
-      map[row.order_id] = {
-        id: row.order_id,
-        created_at: row.created_at,
-        status: row.status,
+  for (const r of rows) {
+    if (!map[r.order_id]) {
+      map[r.order_id] = {
+        id: r.order_id,
+        user_id: r.user_id,
+        created_at: r.created_at,
+        status: r.status,
         products: [],
       };
     }
-    map[row.order_id].products.push({
-      product_id: row.product_id,
-      name: row.product_name,
-      quantity: row.quantity,
-      price: parseFloat(row.price),
+    map[r.order_id].products.push({
+      product_id: r.product_id,
+      name: r.product_name,
+      quantity: r.quantity,
+      price: parseFloat(r.price),
     });
   }
-
   return Object.values(map);
 }
 
-// Fetch one order by id with products
+/** 3) Single order with products (admin & owner) */
 export async function getOrderByIdWithProducts(
-  id: number
+  orderId: number
 ): Promise<OrderWithProducts | null> {
   const rows = await sql<
     {
       order_id: number;
+      user_id: string;
       created_at: string;
       status: string;
       product_id: number;
@@ -95,6 +103,7 @@ export async function getOrderByIdWithProducts(
   >`
     SELECT
       o.id           AS order_id,
+      o.user_id      AS user_id,
       o.created_at,
       o.status,
       p.id           AS product_id,
@@ -104,52 +113,91 @@ export async function getOrderByIdWithProducts(
     FROM orders o
     JOIN order_products op ON o.id = op.order_id
     JOIN products p       ON p.id = op.product_id
-    WHERE o.id = ${id};
+    WHERE o.id = ${orderId};
   `;
 
   if (rows.length === 0) return null;
 
+  const first = rows[0];
   const order: OrderWithProducts = {
-    id: rows[0].order_id,
-    created_at: rows[0].created_at,
-    status: rows[0].status,
+    id: first.order_id,
+    user_id: first.user_id,
+    created_at: first.created_at,
+    status: first.status,
     products: [],
   };
-
-  for (const row of rows) {
+  for (const r of rows) {
     order.products.push({
-      product_id: row.product_id,
-      name: row.product_name,
-      quantity: row.quantity,
-      price: parseFloat(row.price),
+      product_id: r.product_id,
+      name: r.product_name,
+      quantity: r.quantity,
+      price: parseFloat(r.price),
     });
   }
-
   return order;
 }
 
-// Create a new order
-export async function createOrder(productIds: number[]): Promise<Order> {
+/** 4) Orders by a specific user (customer view) */
+export async function getOrdersByUser(
+  userId: string
+): Promise<OrderWithProducts[]> {
+  const all = await getAllOrdersWithProducts();
+  return all.filter((o) => o.user_id === userId);
+}
+
+// ————— Creators —————
+
+/**
+ * Old simple version: quantity=1, no user
+ * (Deprecated, used internally for tests or one-off scripts)
+ */
+export async function createOrderSimple(productIds: number[]): Promise<Order> {
   if (!Array.isArray(productIds) || productIds.length === 0) {
     throw new Error("productIds must be a non-empty array");
   }
-
   const [order] = await sql<Order[]>`
     INSERT INTO orders (created_at, status)
     VALUES (NOW(), 'pending')
     RETURNING *;
   `;
-
-  for (const productId of productIds) {
+  for (const pid of productIds) {
     await sql`
       INSERT INTO order_products (order_id, product_id, quantity)
-      VALUES (${order.id}, ${productId}, 1);
+      VALUES (${order.id}, ${pid}, 1);
     `;
   }
-
   return order;
 }
 
+/**
+ * New version: accepts a userId and detailed items array
+ */
+export async function createOrder(
+  userId: string,
+  items: { product_id: number; quantity: number }[]
+): Promise<Order> {
+  if (!items.length) {
+    throw new Error("At least one item is required");
+  }
+  const [order] = await sql<Order[]>`
+    INSERT INTO orders (user_id, created_at, status)
+    VALUES (${userId}, NOW(), 'pending')
+    RETURNING *;
+  `;
+  for (const it of items) {
+    await sql`
+      INSERT INTO order_products (order_id, product_id, quantity, price)
+      VALUES (${order.id}, ${it.product_id}, ${it.quantity}, 
+        (SELECT price FROM products WHERE id = ${it.product_id})
+      );
+    `;
+  }
+  return order;
+}
+
+// ————— Updaters —————
+
+/** Change status (pending → completed → canceled) */
 export async function updateOrderStatus(
   orderId: number,
   status: string
@@ -163,46 +211,42 @@ export async function updateOrderStatus(
   return row;
 }
 
+// ————— Statistics —————
+
 export async function getTodayOrderCount(): Promise<number> {
-  // PostgreSQL returns COUNT as text, so we parse it
   const [{ count }] = await sql<{ count: string }[]>`
     SELECT COUNT(*) AS count
       FROM orders
-     WHERE created_at::DATE = now()::DATE;
+     WHERE created_at::DATE = NOW()::DATE;
   `;
   return parseInt(count, 10);
 }
 
-/**
- * Returns the number of orders placed today that are not yet completed.
- */
 export async function getTodayPendingOrderCount(): Promise<number> {
   const [{ count }] = await sql<{ count: string }[]>`
     SELECT COUNT(*) AS count
       FROM orders
-     WHERE created_at::DATE = now()::DATE
+     WHERE created_at::DATE = NOW()::DATE
        AND status != 'completed';
   `;
   return parseInt(count, 10);
 }
 
 export async function getThisMonthOrderCount(): Promise<number> {
-  // COUNT returns text, so parse it
   const [{ count }] = await sql<{ count: string }[]>`
     SELECT COUNT(*) AS count
       FROM orders
-     WHERE date_trunc('month', created_at) = date_trunc('month', now());
+     WHERE date_trunc('month', created_at) = date_trunc('month', NOW());
   `;
   return parseInt(count, 10);
 }
 
 export async function getThisYearRevenue(): Promise<number> {
   const [{ total }] = await sql<{ total: string }[]>`
-    SELECT
-      COALESCE(SUM(op.price * op.quantity), 0)::TEXT AS total
-    FROM order_products op
-    JOIN orders o ON o.id = op.order_id
-    WHERE date_trunc('year', o.created_at) = date_trunc('year', now());
+    SELECT COALESCE(SUM(op.price * op.quantity), 0)::TEXT AS total
+      FROM order_products op
+      JOIN orders o ON o.id = op.order_id
+     WHERE date_trunc('year', o.created_at) = date_trunc('year', NOW());
   `;
   return parseFloat(total);
 }

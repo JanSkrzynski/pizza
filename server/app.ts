@@ -11,10 +11,9 @@ import session from "express-session";
 import pgSession from "connect-pg-simple";
 import authRouter from "./auth";
 import "dotenv/config";
-import { requireAuth } from "./services/auth";
+import { requireAuth } from "./middleware/auth";
 
 const app: Application = express();
-const PORT: number = 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -84,6 +83,6 @@ app.use(requireAuth);
 app.use("/", indexRouter);
 app.use("/api", apiRouter);
 
-app.listen(PORT, () => {
-  console.log(`server is running on http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`server is running on http://localhost:${process.env.PORT}`);
 });
