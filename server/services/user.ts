@@ -42,7 +42,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 export async function createUser(
   email: string,
   rawPassword: string,
-  role: string = "staff"
+  role: string = "customer"
 ): Promise<void> {
   const password_hash = await bcrypt.hash(rawPassword, 10);
   await sql`
