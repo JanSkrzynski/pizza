@@ -1,4 +1,5 @@
 import sql from "./db";
+import bcrypt from "bcrypt";
 
 export interface User {
   id: string; // UUID
@@ -15,10 +16,16 @@ export async function getAllUsers(): Promise<User[]> {
   `;
 }
 
-export async function addUser(email: string, role: string): Promise<User> {
+export async function addUser(
+  email: string,
+  rawPassword: string,
+  role: string
+): Promise<User> {
+  const password_hash = await bcrypt.hash(rawPassword, 10);
+
   const [row] = await sql<User[]>`
-    INSERT INTO users (email, role, created_at)
-    VALUES (${email}, ${role}, NOW())
+    INSERT INTO users (email, password_hash, role, created_at)
+    VALUES (${email}, ${password_hash}, ${role}, NOW())
     RETURNING id, email, role, created_at;
   `;
   return row;

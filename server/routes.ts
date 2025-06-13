@@ -205,15 +205,22 @@ router.get("/users/add", (_req, res) => {
 });
 
 // Handle new user submission
+// Handle new user submission, now with password
 router.post(
   "/users/add",
   async (req: Request, res: Response): Promise<any> => {
-    const { email, role } = req.body;
-    if (!email || !role) {
-      return res.status(400).send("Email and role are required");
+    const { email, password, role } = req.body;
+    if (!email || !password || !role) {
+      return res.status(400).send("Email, password and role are required");
     }
-    await addUser(email.trim(), role.trim());
-    res.redirect("/users");
+
+    try {
+      await addUser(email.trim(), password, role.trim());
+      res.redirect("/users");
+    } catch (err) {
+      console.error("addUser error:", err);
+      res.status(500).send("Failed to create user");
+    }
   }
 );
 
