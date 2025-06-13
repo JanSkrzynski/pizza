@@ -1,14 +1,27 @@
-<h1>Categories</h1>
-<% if (categories.length === 0) { %>
-<p>No categories yet.</p>
-<% } else { %>
-<ul>
-  <% categories.forEach(cat => { %>
-  <li>
-    <%= cat.name %> (added <%= new Date(cat.created_at).toLocaleDateString() %>)
-  </li>
-  <% }) %>
-</ul>
-<% } %>
-<p><a href="/categories/add">+ Add New Category</a></p>
-<p><a href="/">← Back to Home</a></p>
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-danger">Categories</h1>
+    <a href="/categories/add" class="btn btn-success">+ Add Category</a>
+  </div>
+
+  <% if (categories.length === 0) { %>
+  <div class="alert alert-info">No categories yet.</div>
+  <% } else { %>
+  <ul class="list-group">
+    <% categories.forEach(cat => { %>
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <span><%= cat.name %></span>
+      <small class="text-muted"
+        >Added <%= new Date(cat.created_at).toLocaleDateString() %></small
+      >
+    </li>
+    <% }) %>
+  </ul>
+  <% } %>
+
+  <div class="mt-4">
+    <a href="/" class="btn btn-link">← Back to Dashboard</a>
+  </div>
+</div>
