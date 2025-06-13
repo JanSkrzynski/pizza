@@ -23,7 +23,6 @@ import {
   getTodayPendingOrderCount,
   updateOrderStatus,
 } from "./services/orders";
-import { get } from "http";
 
 const router: Router = express.Router();
 

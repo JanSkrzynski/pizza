@@ -1,26 +1,48 @@
 <header>
   <nav class="nav">
-    <div class="nav__logo"><!-- TODO: add logo -->Pizza Place</div>
-    <% if (locals.name) { %>
-    <div>Welcome back <%= locals.name %>!</div>
+    <div class="nav__logo">Pizza Place</div>
+
+    <% if (email) { %>
+    <div class="nav__greeting">Welcome back, <%= email %>!</div>
     <% } %>
+
     <ul class="nav__list">
+      <% if (!userId) { %>
+      <!-- Guest -->
+      <li class="nav__item"><a class="nav__link" href="/login">Login</a></li>
       <li class="nav__item">
-        <a class="nav__link" href="/">Dashboard</a>
+        <a class="nav__link" href="/register">Register</a>
+      </li>
+      <% } else { %>
+      <!-- Logged-in user -->
+      <li class="nav__item">
+        <a class="nav__link" href="/orders">My Orders</a>
+      </li>
+      <li class="nav__item">
+        <a class="nav__link" href="/orders/add">Place Order</a>
       </li>
 
+      <% if (role === 'admin') { %>
+      <!-- Admin only -->
       <li class="nav__item">
-        <a class="nav__link" href="/products">Products</a>
+        <a class="nav__link" href="/products">Manage Products</a>
       </li>
       <li class="nav__item">
-        <a class="nav__link" href="/categories">Categories</a>
+        <a class="nav__link" href="/categories">Manage Categories</a>
       </li>
-      <li class="nav__item"><a class="nav__link" href="/orders">Orders</a></li>
-      <li class="nav__item"><a class="nav__link" href="/users">Users</a></li>
-      <% if (locals.name) { %>
-      <li class="nav__item"><a class="nav__link" href="/logout">Logout</a></li>
-      <% } else { %>
-      <li class="nav__item"><a class="nav__link" href="/login">Login</a></li>
+      <li class="nav__item">
+        <a class="nav__link" href="/users">Manage Users</a>
+      </li>
+      <li class="nav__item">
+        <a class="nav__link" href="/orders/all">All Orders</a>
+      </li>
+      <% } %>
+
+      <li class="nav__item">
+        <form action="/logout" method="POST" style="display: inline">
+          <button class="nav__link" type="submit">Logout</button>
+        </form>
+      </li>
       <% } %>
     </ul>
   </nav>

@@ -6,5 +6,6 @@
     "rootDir": "./server",
     "strict": true,
     "esModuleInterop": true
-  }
+  },
+  "include": ["server/**/*.ts", "server/types/**/*.d.ts"]
 }

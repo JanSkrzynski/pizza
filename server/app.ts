@@ -15,16 +15,6 @@ import "dotenv/config";
 const app: Application = express();
 const PORT: number = 3000;
 
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 100,
-//   message: "Too many requests from this IP, try again later",
-//   standardHeaders: true,
-//   legacyHeaders: false,
-// });
-// app.use(limiter);
-
-//Middleware om onze post request in de body te encoderen
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -38,10 +28,6 @@ app.set("layout", "layouts/main");
 
 app.use(express.static(path.join(__dirname, "/public")));
 
-console.log("Database URL:", process.env.DATABASE_URL);
-console.log("Session Secret:", process.env.SESSION_SECRET);
-console.log("cwd:", process.cwd());
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "your-secret",
@@ -52,6 +38,17 @@ app.use(
     },
   })
 );
+
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 100,
+//   message: "Too many requests from this IP, try again later",
+//   standardHeaders: true,
+//   legacyHeaders: false,
+// });
+// app.use(limiter);
+
+//Middleware om onze post request in de body te encoderen
 
 // // Create a plain pg.Pool for sessions
 // const pgPool = new Pool({
@@ -74,28 +71,17 @@ app.use(
 //     cookie: { maxAge: 86400000 }, // 1 day
 //   })
 // );
+app.use((req, res, next) => {
+  res.locals.userId = req.session.userId;
+  res.locals.role = req.session.role;
+  res.locals.email = (req.session as any).email; // ← add this
+  next();
+});
 
+app.use("/", authRouter);
 app.use("/", router);
 app.use("/api", apiRouter);
-app.use(authRouter);
 
 app.listen(PORT, () => {
   console.log(`server is running on http://localhost:${PORT}`);
 });
-
-// app.use(cookieParser());
-// app.use(express.urlencoded({ extended: true }));
-
-// app.use(
-//   session({
-//     secret: "your-secret-key",
-//     resave: false,
-//     saveUninitialized: true,
-//   })
-// );
-
-// app.use(csrf({ cookie: true }));
-// app.use((req: Request, res: Response, next: Function) => {
-//   res.locals.csrfToken = req.csrfToken();
-//   next();
-// });

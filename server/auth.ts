@@ -8,7 +8,7 @@ import session from "express-session";
 
 declare module "express-session" {
   interface SessionData {
-    userId?: number;
+    userId?: string; // ← string, not number
     role?: string;
   }
 }
@@ -56,8 +56,9 @@ router.post("/login", async (req: Request, res: Response) => {
     return res.render("login", { error: "Invalid email or password." });
   }
   // Store user ID in session
-  (req.session as any).userId = user.id;
-  (req.session as any).role = user.role;
+  req.session.userId = user.id;
+  req.session.role = user.role;
+  (req.session as any).email = user.email;
   res.redirect("/");
 });
 
