@@ -3,7 +3,7 @@ import { Pool } from "./../node_modules/@types/pg/index.d";
 // import { cookieParser } from "cookie-parser";
 import express, { Application, Request, Response } from "express";
 import path from "path";
-import router from "./routes";
+import indexRouter from "./routes";
 import expressLayouts from "express-ejs-layouts";
 import rateLimit from "express-rate-limit";
 import apiRouter from "./apiRouter";
@@ -11,6 +11,7 @@ import session from "express-session";
 import pgSession from "connect-pg-simple";
 import authRouter from "./auth";
 import "dotenv/config";
+import { requireAuth } from "./services/auth";
 
 const app: Application = express();
 const PORT: number = 3000;
@@ -79,7 +80,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/", authRouter);
-app.use("/", router);
+app.use(requireAuth);
+app.use("/", indexRouter);
 app.use("/api", apiRouter);
 
 app.listen(PORT, () => {
