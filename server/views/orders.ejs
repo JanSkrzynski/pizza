@@ -1,18 +1,41 @@
-<h1>All Orders</h1>
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-danger">All Orders</h1>
+    <a href="/orders/add/new" class="btn btn-success">+ Place New Order</a>
+  </div>
 
-<p><a href="/orders/add/new">+ Place New Order</a></p>
+  <% if (orders.length === 0) { %>
+  <div class="alert alert-info">No orders yet.</div>
+  <% } else { %>
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Date & Time</th>
+          <th scope="col">Status</th>
+          <th scope="col">Items</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% orders.forEach(order => { %>
+        <tr>
+          <th scope="row"><%= order.id %></th>
+          <td><%= new Date(order.created_at).toLocaleString() %></td>
+          <td class="text-capitalize"><%= order.status %></td>
+          <td><%= order.products.length %> item(s)</td>
+          <td>
+            <a href="/orders/<%= order.id %>" class="btn btn-sm btn-primary"
+              >Details</a
+            >
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
 
-<% if (orders.length === 0) { %>
-<p>No orders yet.</p>
-<% } else { %>
-<ul>
-  <% orders.forEach(order => { %>
-  <li>
-    <a href="/orders/<%= order.id %>"> Order #<%= order.id %> </a>
-    — <%= new Date(order.created_at).toLocaleString() %> — <%= order.status %> —
-    <%= order.products.length %> item(s)
-  </li>
-  <% }) %>
-</ul>
-<% } %>
-<p><a href="/">← Back to Home</a></p>
+  <p><a href="/" class="btn btn-link">← Back to Dashboard</a></p>
+</div>
