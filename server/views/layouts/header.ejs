@@ -1,11 +1,17 @@
 <header>
   <nav class="nav">
-    <div class="nav__logo"><!-- TODO: add logo -->LOGO</div>
+    <div class="nav__logo"><!-- TODO: add logo -->Pizza Place</div>
     <% if (locals.name) { %>
     <div>Welcome back <%= locals.name %>!</div>
     <% } %>
     <ul class="nav__list">
-      <li class="nav__item"><a class="nav__link" href="/">Products</a></li>
+      <li class="nav__item">
+        <a class="nav__link" href="/">Dashboard</a>
+      </li>
+
+      <li class="nav__item">
+        <a class="nav__link" href="/products">Products</a>
+      </li>
       <li class="nav__item"><a class="nav__link" href="/orders">Orders</a></li>
       <li class="nav__item"><a class="nav__link" href="/users">Users</a></li>
       <% if (locals.name) { %>

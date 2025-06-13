@@ -22,11 +22,24 @@ import {
 
 const router: Router = express.Router();
 
+// dashboard
+router.get("/", async (_req: Request, res: Response) => {
+  try {
+    const todayCount = await getTodayOrderCount();
+    const monthCount = await getThisMonthOrderCount();
+    const yearRevenue = await getThisYearRevenue();
+    res.render("dashboard", { todayCount, monthCount, yearRevenue });
+  } catch (err) {
+    console.error("Dashboard error:", err);
+    res.status(500).send("Failed to load dashboard");
+  }
+});
+
 //Getting products
-router.get("/", async (req: Request, res: Response) => {
+router.get("/products", async (req: Request, res: Response) => {
   const name = "Jan";
   const products: Product[] = await getAllProducts();
-  res.render("home", { name, products });
+  res.render("products", { name, products });
 });
 
 // Adding a new product
@@ -145,18 +158,5 @@ router.get(
     res.render("order-detail", { order });
   }
 );
-
-// dashboard
-router.get("/dashboard", async (_req: Request, res: Response) => {
-  try {
-    const todayCount = await getTodayOrderCount();
-    const monthCount = await getThisMonthOrderCount();
-    const yearRevenue = await getThisYearRevenue();
-    res.render("dashboard", { todayCount, monthCount, yearRevenue });
-  } catch (err) {
-    console.error("Dashboard error:", err);
-    res.status(500).send("Failed to load dashboard");
-  }
-});
 
 export default router;
