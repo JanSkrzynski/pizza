@@ -8,7 +8,7 @@ import {
   deleteProduct,
   Product,
 } from "./services/products";
-import { getAllCategories, Category } from "./services/categories";
+import { getAllCategories, Category, addCategory } from "./services/categories";
 import {
   Order,
   OrderWithProducts,
@@ -18,6 +18,7 @@ import {
   getThisMonthOrderCount,
   getThisYearRevenue,
   getTodayOrderCount,
+  getTodayPendingOrderCount,
 } from "./services/orders";
 
 const router: Router = express.Router();
@@ -26,9 +27,16 @@ const router: Router = express.Router();
 router.get("/", async (_req: Request, res: Response) => {
   try {
     const todayCount = await getTodayOrderCount();
+    const todayPendingCount = await getTodayPendingOrderCount(); // ← new
     const monthCount = await getThisMonthOrderCount();
     const yearRevenue = await getThisYearRevenue();
-    res.render("dashboard", { todayCount, monthCount, yearRevenue });
+
+    res.render("dashboard", {
+      todayCount,
+      todayPendingCount,
+      monthCount,
+      yearRevenue,
+    });
   } catch (err) {
     console.error("Dashboard error:", err);
     res.status(500).send("Failed to load dashboard");
@@ -156,6 +164,31 @@ router.get(
     const order = await getOrderByIdWithProducts(id);
     if (!order) return res.status(404).send("Order not found");
     res.render("order-detail", { order });
+  }
+);
+
+// Getting categories
+// Show list of categories
+router.get("/categories", async (req: Request, res: Response) => {
+  const categories: Category[] = await getAllCategories();
+  res.render("categories", { categories });
+});
+
+// Show “Add Category” form
+router.get("/categories/add", (_req, res) => {
+  res.render("add-category");
+});
+
+// Handle form submission
+router.post(
+  "/categories/add",
+  async (req: Request, res: Response): Promise<any> => {
+    const { name } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).send("Category name is required");
+    }
+    await addCategory(name.trim());
+    res.redirect("/categories");
   }
 );
 

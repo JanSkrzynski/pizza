@@ -160,6 +160,19 @@ export async function getTodayOrderCount(): Promise<number> {
   return parseInt(count, 10);
 }
 
+/**
+ * Returns the number of orders placed today that are not yet completed.
+ */
+export async function getTodayPendingOrderCount(): Promise<number> {
+  const [{ count }] = await sql<{ count: string }[]>`
+    SELECT COUNT(*) AS count
+      FROM orders
+     WHERE created_at::DATE = now()::DATE
+       AND status != 'completed';
+  `;
+  return parseInt(count, 10);
+}
+
 export async function getThisMonthOrderCount(): Promise<number> {
   // COUNT returns text, so parse it
   const [{ count }] = await sql<{ count: string }[]>`
