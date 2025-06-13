@@ -24,6 +24,17 @@
       <td>€<%= line.toFixed(2) %></td>
     </tr>
     <% }) %>
+    <form action="/orders/<%= order.id %>/status" method="POST">
+  <select name="status" required>
+    <% ["pending","in_progress","completed","cancelled"].forEach(s => { %>
+      <option value="<%= s %>"
+        <%= order.status===s?"selected":"" %>>
+        <%= s.replace("_"," ") %>
+      </option>
+    <% }) %>
+  </select>
+  <button type="submit">Change Status</button>
+</form>
     <tr>
       <td colspan="3" style="text-align: right"><strong>Total:</strong></td>
       <td><strong>€<%= total.toFixed(2) %></strong></td>

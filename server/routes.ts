@@ -1,4 +1,4 @@
-import { addUser, getAllUsers, User } from "./services/user";
+import { addUser, deleteUser, getAllUsers, User } from "./services/user";
 import express, { Request, Response, Router } from "express";
 import path from "path";
 import {
@@ -21,6 +21,7 @@ import {
   getThisYearRevenue,
   getTodayOrderCount,
   getTodayPendingOrderCount,
+  updateOrderStatus,
 } from "./services/orders";
 import { get } from "http";
 
@@ -239,6 +240,26 @@ router.post(
   }
 );
 
+// POST /orders/:id/status
+router.post(
+  "/orders/:id/status",
+  async (req, res): Promise<any> => {
+    const orderId = parseInt(req.params.id, 10);
+    const { status } = req.body;
+    if (!status) {
+      return res.status(400).send("Status is required");
+    }
+
+    try {
+      await updateOrderStatus(orderId, status);
+      res.redirect("/orders/" + orderId); // back to detail page
+    } catch (err) {
+      console.error("Status update error:", err);
+      res.status(500).send("Failed to update status");
+    }
+  }
+);
+
 // Getting categories
 // Show list of categories
 router.get("/categories", async (req: Request, res: Response) => {
@@ -294,5 +315,16 @@ router.post(
     }
   }
 );
+
+router.post("users/delete/:id", async (req: Request, res: Response) => {
+  const id = req.params.id;
+  try {
+    await deleteUser(id);
+    res.redirect("/users");
+  } catch (err) {
+    console.error("deleteUser error:", err);
+    res.status(500).send("Failed to delete user");
+  }
+});
 
 export default router;

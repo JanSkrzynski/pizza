@@ -1,0 +1,16 @@
+<h1>Register</h1>
+<form method="POST" action="/register">
+  <% if (error) { %>
+  <p style="color: red"><%= error %></p>
+  <% } %>
+  <input name="email" type="email" placeholder="Email" required />
+  <input name="password" type="password" placeholder="Password" required />
+  <input
+    name="confirm"
+    type="password"
+    placeholder="Confirm Password"
+    required
+  />
+  <button type="submit">Register</button>
+</form>
+<p><a href="/login">Already have an account? Log in</a></p>

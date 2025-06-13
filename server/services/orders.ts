@@ -150,6 +150,19 @@ export async function createOrder(productIds: number[]): Promise<Order> {
   return order;
 }
 
+export async function updateOrderStatus(
+  orderId: number,
+  status: string
+): Promise<Order> {
+  const [row] = await sql<Order[]>`
+    UPDATE orders
+       SET status = ${status}
+     WHERE id = ${orderId}
+    RETURNING *;
+  `;
+  return row;
+}
+
 export async function getTodayOrderCount(): Promise<number> {
   // PostgreSQL returns COUNT as text, so we parse it
   const [{ count }] = await sql<{ count: string }[]>`

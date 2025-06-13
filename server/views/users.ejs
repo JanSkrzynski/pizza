@@ -1,13 +1,10 @@
-<h1>Users</h1>
-<% if (users.length === 0) { %>
-<p>No users found.</p>
-<% } else { %>
-<table border="1" cellpadding="6">
+<table>
   <thead>
     <tr>
       <th>Email</th>
       <th>Role</th>
       <th>Joined</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -16,10 +13,23 @@
       <td><%= u.email %></td>
       <td><%= u.role %></td>
       <td><%= new Date(u.created_at).toLocaleDateString() %></td>
+      <td>
+        <form
+          action="/users/delete/<%= u.id %>"
+          method="POST"
+          style="display: inline"
+        >
+          <button
+            type="submit"
+            onclick="return confirm('Delete user <%= u.email %>?');"
+          >
+            Delete
+          </button>
+        </form>
+      </td>
     </tr>
     <% }) %>
   </tbody>
 </table>
-<% } %>
 <p><a href="/users/add">+ Add New User</a></p>
 <p><a href="/">← Back to Home</a></p>
