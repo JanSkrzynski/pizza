@@ -1,0 +1,14 @@
+<h1>Add User</h1>
+<form action="/users/add" method="POST">
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" required autofocus />
+
+  <label for="role">Role:</label>
+  <select id="role" name="role" required>
+    <option value="admin">Admin</option>
+    <option value="staff">Staff</option>
+  </select>
+
+  <button type="submit">Create User</button>
+</form>
+<p><a href="/users">← Back to Users</a></p>

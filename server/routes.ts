@@ -1,3 +1,4 @@
+import { addUser, getAllUsers, User } from "./services/user";
 import express, { Request, Response, Router } from "express";
 import path from "path";
 import {
@@ -189,6 +190,30 @@ router.post(
     }
     await addCategory(name.trim());
     res.redirect("/categories");
+  }
+);
+
+// List all users
+router.get("/users", async (_req, res) => {
+  const users: User[] = await getAllUsers();
+  res.render("users", { users });
+});
+
+// Show add-user form
+router.get("/users/add", (_req, res) => {
+  res.render("add-user");
+});
+
+// Handle new user submission
+router.post(
+  "/users/add",
+  async (req: Request, res: Response): Promise<any> => {
+    const { email, role } = req.body;
+    if (!email || !role) {
+      return res.status(400).send("Email and role are required");
+    }
+    await addUser(email.trim(), role.trim());
+    res.redirect("/users");
   }
 );
 

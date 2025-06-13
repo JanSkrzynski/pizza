@@ -1,0 +1,25 @@
+<h1>Users</h1>
+<% if (users.length === 0) { %>
+<p>No users found.</p>
+<% } else { %>
+<table border="1" cellpadding="6">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Joined</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% users.forEach(u => { %>
+    <tr>
+      <td><%= u.email %></td>
+      <td><%= u.role %></td>
+      <td><%= new Date(u.created_at).toLocaleDateString() %></td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>
+<% } %>
+<p><a href="/users/add">+ Add New User</a></p>
+<p><a href="/">← Back to Home</a></p>
