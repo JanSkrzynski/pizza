@@ -1,0 +1,29 @@
+<h1>My Orders</h1>
+
+<% if (orders.length === 0) { %>
+<p>You haven’t placed any orders yet.</p>
+<% } else { %>
+<ul>
+  <% orders.forEach(o => { %>
+  <li>
+    Order #<%= o.id %> on <%= new Date(o.created_at).toLocaleString() %> — <%=
+    o.status %>
+  </li>
+  <% }) %>
+</ul>
+<% } %>
+
+<hr />
+
+<h2>Place a new order</h2>
+<form action="/my-orders" method="POST">
+  <select name="productIds[]" multiple size="5" required>
+    <% products.forEach(p => { %>
+    <option value="<%= p.id %>">
+      <%= p.name %> (€<%= p.price.toFixed(2) %>)
+    </option>
+    <% }) %>
+  </select>
+  <br />
+  <button type="submit">Order Selected Pizza</button>
+</form>

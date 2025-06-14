@@ -138,11 +138,13 @@ export async function getOrderByIdWithProducts(
 }
 
 /** 4) Orders by a specific user (customer view) */
-export async function getOrdersByUser(
-  userId: string
-): Promise<OrderWithProducts[]> {
-  const all = await getAllOrdersWithProducts();
-  return all.filter((o) => o.user_id === userId);
+export async function getOrdersByUser(userId: string): Promise<Order[]> {
+  return await sql<Order[]>`
+    SELECT *
+      FROM orders
+     WHERE user_id = ${userId}
+  ORDER BY created_at DESC;
+  `;
 }
 
 // ————— Creators —————

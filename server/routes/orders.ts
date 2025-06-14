@@ -8,6 +8,7 @@ import {
   updateOrderStatus,
 } from "../services/orders";
 import { requireAdmin, requireAuth } from "../middleware/auth";
+import { getAllProducts } from "../services/products";
 
 const router = Router();
 
@@ -139,5 +140,25 @@ router.post(
     }
   }
 );
+
+// only require that you be logged in
+router.get("/my-orders", requireAuth, async (req, res) => {
+  const userId = req.session.userId!; // string
+  const orders = await getOrdersByUser(userId);
+  const products = await getAllProducts(); // for the add-order form
+  res.render("my-orders", { orders, products });
+});
+
+// handle the form on that same page
+router.post("/my-orders", requireAuth, async (req, res) => {
+  const userId = req.session.userId!;
+  const productIds = req.body.productIds as number[];
+  // (validate productIds array as before…)
+  await createOrder(
+    userId,
+    productIds.map((id) => ({ product_id: id, quantity: 1 }))
+  );
+  res.redirect("/my-orders");
+});
 
 export default router;
