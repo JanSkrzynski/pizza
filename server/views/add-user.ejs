@@ -1,18 +1,56 @@
-<h1>Add User</h1>
-<form action="/users/add" method="POST">
-  <label for="email">Email:</label>
-  <input type="email" id="email" name="email" required autofocus />
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+          <h4 class="mb-0">Add New User</h4>
+        </div>
+        <div class="card-body">
+          <form action="/users/add" method="POST" novalidate>
+            <!-- Email -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                required
+                autofocus
+              />
+            </div>
 
-  <label for="password">Password:</label>
-  <input type="password" id="password" name="password" required />
+            <!-- Password -->
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                required
+              />
+            </div>
 
-  <label for="role">Role:</label>
-  <select id="role" name="role" required>
-    <option value="admin">Admin</option>
-    <option value="staff">Staff</option>
-    <option value="customer">Customer</option>
-  </select>
+            <!-- Role -->
+            <div class="mb-4">
+              <label for="role" class="form-label">Role</label>
+              <select id="role" name="role" class="form-select" required>
+                <option value="" disabled selected>— Select role —</option>
+                <option value="admin">Admin</option>
+                <option value="staff">Staff</option>
+                <option value="customer">Customer</option>
+              </select>
+            </div>
 
-  <button type="submit">Create User</button>
-</form>
-<p><a href="/users">← Back to Users</a></p>
+            <!-- Buttons -->
+            <div class="d-flex justify-content-between">
+              <a href="/users" class="btn btn-link">← Back to Users</a>
+              <button type="submit" class="btn btn-success">Create User</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
