@@ -26,6 +26,10 @@ router.get(
   requireAdmin,
   async (_req: Request, res: Response): Promise<void> => {
     const orders = await getAllOrdersWithProducts();
+    orders.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
     res.render("orders", { orders });
   }
 );
@@ -39,6 +43,10 @@ router.get(
   requireAdmin,
   async (_req: Request, res: Response): Promise<void> => {
     const orders = await getAllOrdersWithProducts();
+    orders.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
     res.render("orders", { orders, title: "All Orders" });
   }
 );
@@ -150,14 +158,19 @@ router.post(
 router.get("/my", requireAuth, async (req, res) => {
   const userId = req.session.userId!;
   const orders = await getOrdersByUser(userId);
-  res.render("orders", { orders });
+  res.render("my-orders", { orders });
 });
 
 // handle the form on that same page
-router.get("/my", requireAuth, async (req: Request, res: Response) => {
-  const userId = req.session.userId!; // string UUID
-  const orders = await getOrdersByUser(userId);
-  res.render("my-orders", { orders });
+router.post("/my", requireAuth, async (req, res) => {
+  const userId = req.session.userId!;
+  const productIds = req.body.productIds as number[];
+  // (validate productIds array as before…)
+  await createOrder(
+    userId,
+    productIds.map((id) => ({ product_id: id, quantity: 1 }))
+  );
+  res.redirect("/my-orders");
 });
 
 export default router;
