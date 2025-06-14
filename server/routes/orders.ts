@@ -81,7 +81,6 @@ router.post(
   "/add",
   async (req: Request, res: Response): Promise<void> => {
     try {
-      // parse the nested products[...] structure
       const productsField = req.body.products;
       if (!productsField || typeof productsField !== "object") {
         res.status(400).send("You must select at least one product");
