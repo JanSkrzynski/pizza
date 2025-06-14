@@ -1,109 +1,77 @@
-require("dotenv").config();
-import { Pool } from "./../node_modules/@types/pg/index.d";
-// import { cookieParser } from "cookie-parser";
-import express, { Application, Request, Response } from "express";
-import multer from "multer";
+import express from "express";
 import path from "path";
-import indexRouter from "./routes/index";
+import dotenv from "dotenv";
 import expressLayouts from "express-ejs-layouts";
-import rateLimit from "express-rate-limit";
-import apiRouter from "./routes/api";
-import session from "express-session";
-import pgSession from "connect-pg-simple";
+import cookieSession from "cookie-session";
+
 import authRouter from "./routes/auth";
-import "dotenv/config";
+import apiRouter from "./routes/api";
+import routes from "./routes";
 import { requireAuth } from "./middleware/auth";
-import fs from "fs";
 
-const app: Application = express();
+dotenv.config();
 
+const app = express();
+
+// ─── Static files (css, js, uploads, etc.) ───────────────────────
+app.use(express.static(path.join(__dirname, "public")));
+
+// ─── Body parsers for form submissions & JSON ────────────────────
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-//Template-engine configureren
+// ─── EJS + Layouts configuration ────────────────────────────────
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
-//EJS layout configureren
 app.use(expressLayouts);
 app.set("layout", "layouts/main");
 
-app.use(express.static(path.join(__dirname, "/public")));
-
-const UPLOAD_DIR = path.join(__dirname, "public", "uploads");
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-  console.log("✔️ Created upload directory:", UPLOAD_DIR);
-}
-
+// ─── Cookie-based session (client-side) ──────────────────────────
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "your-secret",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
-    },
+  cookieSession({
+    name: "session",
+    keys: [process.env.SESSION_SECRET || "please-change-this"],
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   })
 );
 
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 100,
-//   message: "Too many requests from this IP, try again later",
-//   standardHeaders: true,
-//   legacyHeaders: false,
-// });
-// app.use(limiter);
-
-//Middleware om onze post request in de body te encoderen
-
-// // Create a plain pg.Pool for sessions
-// const pgPool = new Pool({
-//   connectionString: process.env.DATABASE_URL,
-//   // or host/user/password/database if you’re not using a URL
-// });
-
-// // Configure and mount express-session with connect-pg-simple
-// const PgSession = pgSession(session);
-// app.use(
-//   session({
-//     store: new PgSession({
-//       pool: pgPool, // ← your pg.Pool instance here
-//       tableName: "user_sessions", // defaults to 'session', change as you like
-//       createTableIfMissing: true, // auto-create table if not exists
-//     }),
-//     secret: process.env.SESSION_SECRET || "keyboard cat",
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: { maxAge: 86400000 }, // 1 day
-//   })
-// );
 app.use((req, res, next) => {
   res.locals.userId = req.session.userId;
   res.locals.role = req.session.role;
-  res.locals.email = (req.session as any).email; // ← add this
   next();
 });
 
-// store uploads under /public/uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../public/uploads"));
-  },
-  filename: (req, file, cb) => {
-    // e.g. 1623456789012-originalname.jpg
-    const unique = `${Date.now()}-${file.originalname}`;
-    cb(null, unique);
-  },
-});
-export const upload = multer({ storage });
-
+// ─── Public routes (no login required) ──────────────────────────
 app.use("/api", apiRouter);
-app.use("/", authRouter);
-app.use(requireAuth);
-app.use("/", indexRouter);
+app.use(authRouter);
 
-app.listen(process.env.PORT, () => {
-  console.log(`server is running on http://localhost:${process.env.PORT}`);
+// ─── Protect everything below with login ────────────────────────
+app.use(requireAuth);
+app.use(routes);
+
+// ─── 404 handler ─────────────────────────────────────────────────
+app.use((_req, res) => {
+  res.status(404).render("404");
+});
+
+// ─── Error handler ───────────────────────────────────────────────
+app.use(
+  (
+    err: any,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction
+  ) => {
+    console.error("Uncaught error:", err.stack || err);
+    res.status(500).send("Internal Server Error");
+  }
+);
+
+// ─── Start server ────────────────────────────────────────────────
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Listening on http://localhost:${PORT}`);
 });

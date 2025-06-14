@@ -2,12 +2,16 @@ import { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { createUser, getUserByEmail } from "../services/user";
 
-// Extend express-session types for TypeScript
-import session from "express-session";
-declare module "express-session" {
-  interface SessionData {
-    userId?: string;
-    role?: string;
+// Extend Express Request interface to include session properties
+declare global {
+  namespace Express {
+    interface Request {
+      session: {
+        userId?: string;
+        role?: string;
+        destroy(callback: (err: any) => void): void;
+      };
+    }
   }
 }
 
@@ -71,11 +75,10 @@ router.post("/login", async (req: Request, res: Response) => {
 });
 
 // ─── Logout ────────────────────────────────────────────────────────
-router.post("/logout", (req: Request, res: Response) => {
-  req.session.destroy((err) => {
-    if (err) console.error("Session destroy error:", err);
-    res.redirect("/login");
-  });
+router.post("/logout", (_req, res) => {
+  // clearing req.session wipes the cookie
+  (_req.session as any) = null;
+  res.redirect("/login");
 });
 
 export default router;
