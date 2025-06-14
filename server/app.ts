@@ -13,6 +13,7 @@ import pgSession from "connect-pg-simple";
 import authRouter from "./routes/auth";
 import "dotenv/config";
 import { requireAuth } from "./middleware/auth";
+import fs from "fs";
 
 const app: Application = express();
 
@@ -28,6 +29,12 @@ app.use(expressLayouts);
 app.set("layout", "layouts/main");
 
 app.use(express.static(path.join(__dirname, "/public")));
+
+const UPLOAD_DIR = path.join(__dirname, "public", "uploads");
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+  console.log("✔️ Created upload directory:", UPLOAD_DIR);
+}
 
 app.use(
   session({
