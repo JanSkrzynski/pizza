@@ -1,23 +1,18 @@
-import { NextFunction, Request, Response } from "express";
+import { RequestHandler } from "express";
 
-export const requireAuth = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const requireAuth: RequestHandler = (req, res, next) => {
   if (!req.session.userId) {
-    return res.redirect("/login");
+    res.redirect("/login");
+    return;
   }
+
   next();
 };
 
-export const requireAdmin = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const requireAdmin: RequestHandler = (req, res, next) => {
   if (req.session.role !== "admin") {
-    return res.status(403).send("Forbidden");
+    res.status(403).send("Forbidden");
+    return;
   }
   next();
 };

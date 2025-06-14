@@ -13,6 +13,7 @@ const router = Router();
 
 // 1️⃣ Protect everything: must be logged in
 router.use(requireAuth);
+router.use(requireAdmin);
 
 /**
  * GET /orders
@@ -90,18 +91,22 @@ router.post(
         id: parseInt(item.id, 10),
         qty: parseInt(item.quantity, 10),
       }));
-      const validIds = items
-        .filter((it) => it.id > 0 && it.qty > 0)
-        .map((it) => it.id);
+      const validItems = items.filter((it) => it.id > 0 && it.qty > 0);
 
-      if (validIds.length === 0) {
+      if (validItems.length === 0) {
         res.status(400).send("You must select at least one product");
         return;
       }
 
       // associate to the logged-in user
       const userId = req.session.userId!;
-      await createOrder(validIds, userId);
+      await createOrder(
+        userId,
+        validItems.map((it) => ({
+          product_id: it.id,
+          quantity: it.qty,
+        }))
+      );
 
       res.redirect("/orders");
     } catch (err) {
