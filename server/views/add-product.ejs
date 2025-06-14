@@ -1,30 +1,98 @@
-<form method="post" action="/add/product" class="form">
-  <div class="form__group">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required />
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+          <h4 class="mb-0">Add New Product</h4>
+        </div>
+        <div class="card-body">
+          <form action="/products/add" method="POST" novalidate>
+            <!-- Name -->
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-control"
+                required
+              />
+            </div>
 
-    <label for="description">Description:</label>
-    <input type="text" id="description" name="description" required />
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                class="form-control"
+                required
+              />
+            </div>
 
-    <label for="price">Price (€):</label>
-    <input type="number" id="price" name="price" step="0.01" min="0" required />
+            <!-- Price -->
+            <div class="mb-3">
+              <label for="price" class="form-label">Price (€)</label>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                class="form-control"
+                step="0.01"
+                min="0"
+                required
+              />
+            </div>
 
-    <label for="image_url">Image URL:</label>
-    <input type="text" id="image_url" name="image_url" />
+            <!-- Image URL -->
+            <div class="mb-3">
+              <label for="image_url" class="form-label">Image URL</label>
+              <input
+                type="url"
+                id="image_url"
+                name="image_url"
+                class="form-control"
+                placeholder="https://example.com/pizza.jpg"
+              />
+            </div>
 
-    <label for="slug">Slug:</label>
-    <input type="text" id="slug" name="slug" required />
+            <!-- Slug -->
+            <div class="mb-3">
+              <label for="slug" class="form-label">Slug</label>
+              <input
+                type="text"
+                id="slug"
+                name="slug"
+                class="form-control"
+                required
+              />
+            </div>
 
-    <label for="category_id">Category:</label>
-    <select id="category_id" name="category_id" required>
-      <option value="" disabled selected>— Select category —</option>
-      <% categories.forEach((cat) => { %>
-      <option value="<%= cat.id %>"><%= cat.name %></option>
-      <% }) %>
-    </select>
+            <!-- Category -->
+            <div class="mb-4">
+              <label for="category_id" class="form-label">Category</label>
+              <select
+                id="category_id"
+                name="category_id"
+                class="form-select"
+                required
+              >
+                <option value="" disabled selected>— Select category —</option>
+                <% categories.forEach(cat => { %>
+                <option value="<%= cat.id %>"><%= cat.name %></option>
+                <% }) %>
+              </select>
+            </div>
 
-    <button type="submit">Add Product</button>
+            <!-- Buttons -->
+            <div class="d-flex justify-content-between">
+              <a href="/products" class="btn btn-link">← Back to Products</a>
+              <button type="submit" class="btn btn-success">Add Product</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-</form>
-
-<a class="button" href="/">Back to Products</a>
+</div>
