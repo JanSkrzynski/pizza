@@ -10,7 +10,7 @@ import { getAllCategories } from "../services/categories";
 // If you want orders to be tied to users, use createOrder below.
 // If you still have the old simple version, you can import that instead:
 // import { createOrderSimple as createOrder } from "../services/orders";
-import { createOrder } from "../services/orders";
+import { createOrder, createOrderSimple } from "../services/orders";
 
 const router = Router();
 
@@ -66,36 +66,54 @@ router.get("/products/:slug", async (req, res) => {
  */
 router.post("/orders", async (req, res) => {
   try {
-    const productIds = req.body.productIds;
+    // First, see if the client sent detailed items
+    const items = req.body.items as
+      | { product_id: number; quantity: number }[]
+      | undefined;
+
+    if (items) {
+      // **New signature**: createOrder(userId, items[])
+      const userId = req.body.userId as string;
+      if (!userId) {
+        res.status(400).json({ error: "Must include userId" });
+        return;
+      }
+      // validate items
+      if (
+        !Array.isArray(items) ||
+        items.some(
+          (it) =>
+            typeof it.product_id !== "number" || typeof it.quantity !== "number"
+        )
+      ) {
+        res
+          .status(400)
+          .json({ error: "items must be [{ product_id, quantity }, ...]" });
+        return;
+      }
+      const order = await createOrder(userId, items);
+      res.status(201).json({ success: true, order });
+      return;
+    }
+
+    // Fallback: old simple API
+    const productIds = req.body.productIds as number[] | undefined;
     if (
       !Array.isArray(productIds) ||
       productIds.some((id) => typeof id !== "number")
     ) {
       res
         .status(400)
-        .json({ error: "Body must contain an array of numeric productIds" });
+        .json({ error: "Request must include productIds or items" });
       return;
     }
-
-    // associate to the logged-in user and set quantity=1 for each product
-    const userId = req.session.userId;
-    if (!userId) {
-      res.status(401).json({ error: "Not authenticated" });
-      return;
-    }
-    const items = productIds.map((id: number) => ({
-      product_id: id,
-      quantity: 1,
-    }));
-    const order = await createOrder(userId, items);
-
+    const order = await createOrderSimple(productIds);
     res.status(201).json({ success: true, order });
-  } catch (err) {
+  } catch (err: any) {
     console.error("POST /api/orders error:", err);
-    res.status(500).json({
-      error: "Failed to create order",
-      details: (err as Error).message,
-    });
+    res
+      .status(500)
+      .json({ error: "Failed to create order", details: err.message });
   }
 });
 
