@@ -1,45 +1,81 @@
-<h1>Order #<%= order.id %></h1>
-<p>
-  Date: <%= new Date(order.created_at).toLocaleString() %><br />
-  Status: <%= order.status %>
-</p>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Order #<%= order.id %></h1>
+    <a href="/orders/all" class="btn btn-outline-secondary">← Back to Orders</a>
+  </div>
 
-<h2>Products</h2>
-<table border="1" cellpadding="6">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Qty</th>
-      <th>Unit Price</th>
-      <th>Subtotal</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% let total = 0; %> <% order.products.forEach(item => { const line =
-    item.quantity * item.price; total += line; %>
-    <tr>
-      <td><%= item.name %></td>
-      <td><%= item.quantity %></td>
-      <td>€<%= item.price.toFixed(2) %></td>
-      <td>€<%= line.toFixed(2) %></td>
-    </tr>
-    <% }) %>
-    <form action="/orders/<%= order.id %>/status" method="POST">
-  <select name="status" required>
-    <% ["pending","in_progress","completed","cancelled"].forEach(s => { %>
-      <option value="<%= s %>"
-        <%= order.status===s?"selected":"" %>>
-        <%= s.replace("_"," ") %>
-      </option>
-    <% }) %>
-  </select>
-  <button type="submit">Change Status</button>
-</form>
-    <tr>
-      <td colspan="3" style="text-align: right"><strong>Total:</strong></td>
-      <td><strong>€<%= total.toFixed(2) %></strong></td>
-    </tr>
-  </tbody>
-</table>
+  <div class="card mb-4">
+    <div class="card-body">
+      <p class="mb-1"><strong>Date:</strong> <%= new Date(order.created_at).toLocaleString() %></p>
+      <p class="mb-0">
+        <strong>Status:</strong>
+        <span class="badge 
+          <% if(order.status==='pending') { %> bg-warning text-dark
+          <% } else if(order.status==='in_progress') { %> bg-info
+          <% } else if(order.status==='completed') { %> bg-success
+          <% } else if(order.status==='cancelled') { %> bg-danger
+          <% } %>
+        ">
+          <%= order.status.replace('_',' ') %>
+        </span>
+      </p>
+    </div>
+  </div>
 
-<p><a href="/orders">← Back to Orders</a></p>
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Items in this Order</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-striped mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Product</th>
+            <th class="text-center">Qty</th>
+            <th class="text-end">Unit Price</th>
+            <th class="text-end">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% let total = 0; %>
+          <% order.products.forEach(item => { 
+               const line = item.quantity * item.price; 
+               total += line;
+          %>
+          <tr>
+            <td><%= item.name %></td>
+            <td class="text-center"><%= item.quantity %></td>
+            <td class="text-end">€<%= item.price.toFixed(2) %></td>
+            <td class="text-end">€<%= line.toFixed(2) %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="3" class="text-end">Total:</th>
+            <th class="text-end">€<%= total.toFixed(2) %></th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="card-body">
+      <form action="/orders/<%= order.id %>/status" method="POST" class="row g-2 align-items-center">
+        <div class="col-auto">
+          <label for="statusSelect" class="col-form-label">Change Status:</label>
+        </div>
+        <div class="col-auto">
+          <select id="statusSelect" name="status" class="form-select" required>
+            <% ['pending','in_progress','completed','cancelled'].forEach(s => { %>
+              <option value="<%= s %>" <%= order.status===s?'selected':'' %>>
+                <%= s.replace('_',' ') %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
