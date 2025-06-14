@@ -33,9 +33,19 @@ router.post("/add", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/:id/delete", async (req, res) => {
-  await deleteUser(req.params.id);
-  res.redirect("/users");
-});
+router.post(
+  "/:id/delete",
+  async (req: Request, res: Response): Promise<void> => {
+    console.log("DELETE /users/:id/delete hit, id =", req.params.id);
+    try {
+      await deleteUser(req.params.id);
+      console.log("Deleted user", req.params.id);
+      res.redirect("/users");
+    } catch (err) {
+      console.error("deleteUser error:", err);
+      res.status(500).send("Failed to delete user");
+    }
+  }
+);
 
 export default router;

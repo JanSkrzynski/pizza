@@ -25,10 +25,11 @@
           <td><%= new Date(u.created_at).toLocaleDateString() %></td>
           <td>
             <form
-              action="/users/delete/<%= u.id %>"
+              action="/users/<%= u.id %>/delete"
+              type="submit"
               method="POST"
-              class="d-inline"
-              onsubmit="return confirm('Delete user <%= u.email %>?');"
+              class="btn btn-sm btn-danger"
+              onclick="return confirm('Delete user <%= u.email %>?');"
             >
               <button type="submit" class="btn btn-sm btn-danger">
                 Delete
