@@ -24,7 +24,7 @@
           <th scope="row"><%= order.id %></th>
           <td><%= new Date(order.created_at).toLocaleString() %></td>
           <td class="text-capitalize"><%= order.status %></td>
-          <td><%= order.products.length %> item(s)</td>
+          <td><%= Array.isArray(order.products)%> item(s)</td>
           <td>
             <a href="/orders/<%= order.id %>" class="btn btn-sm btn-primary"
               >Details</a

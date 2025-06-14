@@ -1,31 +1,64 @@
-<h1>Place New Order</h1>
-<form action="/orders/add/new" method="POST" id="order-form">
-  <div id="products-wrapper">
-    <div class="order-row">
-      <select name="products[0][id]" required>
-        <% products.forEach(p => { %>
-        <option value="<%= p.id %>"><%= p.name %> (€<%= p.price %>)</option>
-        <% }) %>
-      </select>
-      <input
-        type="number"
-        name="products[0][quantity]"
-        value="1"
-        min="1"
-        step="1"
-        required
-      />
-      <button type="button" class="remove-button" onclick="removeRow(this)">
-        −
-      </button>
+<div class="container py-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-danger text-white">
+      <h3 class="mb-0">Place New Order</h3>
+    </div>
+    <div class="card-body">
+      <form action="/orders/add" method="POST" id="order-form" novalidate>
+        <div id="products-wrapper">
+          <div class="row align-items-end order-row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Product</label>
+              <select name="products[0][id]" class="form-select" required>
+                <% products.forEach(p => { %>
+                <option value="<%= p.id %>">
+                  <%= p.name %> (€<%= p.price %>)
+                </option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Quantity</label>
+              <input
+                type="number"
+                name="products[0][quantity]"
+                class="form-control"
+                value="1"
+                min="1"
+                step="1"
+                required
+              />
+            </div>
+            <div class="col-md-3 text-end">
+              <button
+                type="button"
+                class="btn btn-outline-danger mt-2 remove-button"
+                onclick="removeRow(this)"
+              >
+                &minus;
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <button
+            type="button"
+            class="btn btn-outline-success"
+            onclick="addRow()"
+          >
+            + Add Another Product
+          </button>
+        </div>
+
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary">Place Order</button>
+          <a href="/orders" class="btn btn-link">Cancel</a>
+        </div>
+      </form>
     </div>
   </div>
-  <button type="button" class="add-button" onclick="addRow()">
-    + Add Product
-  </button>
-  <br /><br />
-  <button type="submit">Place Order</button>
-</form>
+</div>
 
 <script>
   let index = 1;
@@ -33,12 +66,12 @@
     const wrapper = document.getElementById("products-wrapper");
     const firstRow = wrapper.querySelector(".order-row");
     const newRow = firstRow.cloneNode(true);
-    // update names
-    newRow.querySelector("select").name = `products[${index}][id]`;
-    newRow.querySelector("input").name = `products[${index}][quantity]`;
-    newRow.querySelector("select").value =
-      firstRow.querySelector("select").value;
+
+    // update names & reset values
+    newRow.querySelector("select").name = `products[\${index}][id]`;
+    newRow.querySelector("input").name = `products[\${index}][quantity]`;
     newRow.querySelector("input").value = 1;
+
     wrapper.appendChild(newRow);
     index++;
   }
@@ -47,7 +80,7 @@
     const wrapper = document.getElementById("products-wrapper");
     const rows = wrapper.querySelectorAll(".order-row");
     if (rows.length > 1) {
-      button.parentNode.remove();
+      button.closest(".order-row").remove();
     }
   }
 </script>

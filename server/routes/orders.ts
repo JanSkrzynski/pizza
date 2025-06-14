@@ -22,10 +22,11 @@ router.use(requireAdmin);
  */
 router.get(
   "/",
-  async (req: Request, res: Response): Promise<void> => {
-    const userId = req.session.userId!;
-    const orders = await getOrdersByUser(userId);
-    res.render("orders", { orders, title: "My Orders" });
+  requireAuth,
+  requireAdmin,
+  async (_req: Request, res: Response): Promise<void> => {
+    const orders = await getAllOrdersWithProducts();
+    res.render("orders", { orders });
   }
 );
 
@@ -116,6 +117,11 @@ router.post(
   }
 );
 
+router.get("/add/new", async (req, res) => {
+  const products = await getAllProducts();
+  res.render("add-order", { products });
+});
+
 /**
  * POST /orders/:id/status
  * Change an order’s status (admin or staff)
@@ -141,23 +147,17 @@ router.post(
 );
 
 // only require that you be logged in
-router.get("/my-orders", requireAuth, async (req, res) => {
-  const userId = req.session.userId!; // string
+router.get("/my", requireAuth, async (req, res) => {
+  const userId = req.session.userId!;
   const orders = await getOrdersByUser(userId);
-  const products = await getAllProducts(); // for the add-order form
-  res.render("my-orders", { orders, products });
+  res.render("orders", { orders });
 });
 
 // handle the form on that same page
-router.post("/my-orders", requireAuth, async (req, res) => {
-  const userId = req.session.userId!;
-  const productIds = req.body.productIds as number[];
-  // (validate productIds array as before…)
-  await createOrder(
-    userId,
-    productIds.map((id) => ({ product_id: id, quantity: 1 }))
-  );
-  res.redirect("/my-orders");
+router.get("/my", requireAuth, async (req: Request, res: Response) => {
+  const userId = req.session.userId!; // string UUID
+  const orders = await getOrdersByUser(userId);
+  res.render("my-orders", { orders });
 });
 
 export default router;

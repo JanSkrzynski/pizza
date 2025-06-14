@@ -34,14 +34,19 @@
           </li>
           <% } else { %>
           <!-- logged-in users see their links -->
+          <% if (role === 'admin') { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/orders/all">All Orders</a>
+          </li>
+          <% } %> <% if (role !== 'admin') { %>
           <li class="nav-item">
             <a class="nav-link" href="/orders">My Orders</a>
           </li>
+          <% } %> <% if (role !== 'admin') { %>
           <li class="nav-item">
             <a class="nav-link" href="/orders/add">Place Order</a>
           </li>
-
-          <% if (role === 'admin') { %>
+          <% } %> <% if (role === 'admin') { %>
           <!-- admins get full management menu -->
           <li class="nav-item">
             <a class="nav-link" href="/products">Manage Products</a>
@@ -52,9 +57,7 @@
           <li class="nav-item">
             <a class="nav-link" href="/users">Manage Users</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/orders/all">All Orders</a>
-          </li>
+
           <% } %>
 
           <!-- everyone who is logged in can log out -->
