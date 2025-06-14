@@ -1,40 +1,105 @@
-<form method="post" action="/edit/product" class="form">
-  <input type="hidden" name="id" value="<%= product.id %>" />
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+          <h4 class="mb-0">Edit Product</h4>
+        </div>
+        <div class="card-body">
+          <form action="/products/<%= product.slug %>/edit" method="POST" novalidate>
+            <input type="hidden" name="id" value="<%= product.id %>" />
 
-  <label>Name:</label>
-  <input type="text" name="name" value="<%= product.name %>" required />
+            <!-- Name -->
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-control"
+                value="<%= product.name %>"
+                required
+              />
+            </div>
 
-  <label>Description:</label>
-  <input type="text" name="description" value="<%= product.description %>" />
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                class="form-control"
+                value="<%= product.description %>"
+              />
+            </div>
 
-  <label>Price (€):</label>
-  <input
-    type="number"
-    name="price"
-    step="0.01"
-    min="0"
-    value="<%= product.price %>"
-    required
-  />
+            <!-- Price -->
+            <div class="mb-3">
+              <label for="price" class="form-label">Price (€)</label>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                class="form-control"
+                step="0.01"
+                min="0"
+                value="<%= product.price %>"
+                required
+              />
+            </div>
 
-  <label>Image URL:</label>
-  <input type="text" name="image_url" value="<%= product.image_url %>" />
+            <!-- Image URL -->
+            <div class="mb-3">
+              <label for="image_url" class="form-label">Image URL</label>
+              <input
+                type="url"
+                id="image_url"
+                name="image_url"
+                class="form-control"
+                value="<%= product.image_url %>"
+              />
+            </div>
 
-  <label>Slug:</label>
-  <input type="text" name="slug" value="<%= product.slug %>" required />
+            <!-- Slug -->
+            <div class="mb-3">
+              <label for="slug" class="form-label">Slug</label>
+              <input
+                type="text"
+                id="slug"
+                name="slug"
+                class="form-control"
+                value="<%= product.slug %>"
+                required
+              />
+            </div>
 
-  <label>Category:</label>
-  <select name="category_id" required>
-    <% categories.forEach((cat) => { %>
-      <option
-        value="<%= cat.id %>"
-        <%= cat.id === product.category_id ? "selected" : "" %>
-      >
-        <%= cat.name %>
-      </option>
-    <% }); %>
-  </select>
+            <!-- Category -->
+            <div class="mb-4">
+              <label for="category_id" class="form-label">Category</label>
+              <select
+                id="category_id"
+                name="category_id"
+                class="form-select"
+                required
+              >
+                <% categories.forEach(cat => { %>
+                  <option
+                    value="<%= cat.id %>"
+                    <%= cat.id === product.category_id ? "selected" : "" %>
+                  ><%= cat.name %></option>
+                <% }) %>
+              </select>
+            </div>
 
-  <button type="submit">Save Changes</button>
-</form>
-<a class="button" href="/">Back to Products</a>
+            <!-- Buttons -->
+            <div class="d-flex justify-content-between">
+              <a href="/products" class="btn btn-link">← Back to Products</a>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
