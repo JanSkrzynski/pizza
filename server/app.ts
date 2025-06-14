@@ -78,10 +78,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/api", apiRouter);
 app.use("/", authRouter);
 app.use(requireAuth);
 app.use("/", indexRouter);
-app.use("/api", apiRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`server is running on http://localhost:${process.env.PORT}`);

@@ -18,6 +18,4 @@ router.use("/categories", categoriesRouter);
 router.use("/orders", ordersRouter);
 router.use("/users", usersRouter);
 
-router.use("/api", apiRouter);
-
 export default router;
