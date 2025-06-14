@@ -2,6 +2,7 @@ require("dotenv").config();
 import { Pool } from "./../node_modules/@types/pg/index.d";
 // import { cookieParser } from "cookie-parser";
 import express, { Application, Request, Response } from "express";
+import multer from "multer";
 import path from "path";
 import indexRouter from "./routes/index";
 import expressLayouts from "express-ejs-layouts";
@@ -77,6 +78,19 @@ app.use((req, res, next) => {
   res.locals.email = (req.session as any).email; // ← add this
   next();
 });
+
+// store uploads under /public/uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../public/uploads"));
+  },
+  filename: (req, file, cb) => {
+    // e.g. 1623456789012-originalname.jpg
+    const unique = `${Date.now()}-${file.originalname}`;
+    cb(null, unique);
+  },
+});
+export const upload = multer({ storage });
 
 app.use("/api", apiRouter);
 app.use("/", authRouter);

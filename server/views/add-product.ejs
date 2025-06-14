@@ -6,7 +6,12 @@
           <h4 class="mb-0">Add New Product</h4>
         </div>
         <div class="card-body">
-          <form action="/products/add" method="POST" novalidate>
+          <form
+            action="/products/add"
+            method="POST"
+            enctype="multipart/form-data"
+            novalidate
+          >
             <!-- Name -->
             <div class="mb-3">
               <label for="name" class="form-label">Name</label>
@@ -47,13 +52,13 @@
 
             <!-- Image URL -->
             <div class="mb-3">
-              <label for="image_url" class="form-label">Image URL</label>
+              <label for="image_file" class="form-label">Product Image</label>
               <input
-                type="url"
-                id="image_url"
-                name="image_url"
+                type="file"
+                id="image_file"
+                name="image_file"
+                accept="image/*"
                 class="form-control"
-                placeholder="https://example.com/pizza.jpg"
               />
             </div>
 

@@ -10,6 +10,7 @@ import {
 } from "../services/products";
 import { getAllCategories, Category } from "../services/categories";
 import { requireAdmin, requireAuth } from "../middleware/auth";
+import { upload } from "../middleware/upload";
 
 const router = Router();
 
@@ -30,26 +31,28 @@ router.get("/add", async (_req, res) => {
 });
 
 // 3) Handle “Add Product” submission
-router.post("/add", async (req, res) => {
-  const { name, description, price, image_url, slug, category_id } = req.body;
-  const priceNum = parseFloat(price);
-  const categoryNum = parseInt(category_id, 10);
-
-  try {
-    await addProduct(
-      name,
-      description || null,
-      priceNum,
-      image_url || null,
-      slug,
-      categoryNum
-    );
-    res.redirect(`/products/${slug}`);
-  } catch (err) {
-    console.error("addProduct error:", err);
-    res.status(500).send("Failed to add product");
+router.post(
+  "/add",
+  upload.single("image_file"), // ← name of your <input type="file" name="image_file">
+  async (req: Request, res: Response) => {
+    try {
+      const { name, description, price, slug, category_id } = req.body;
+      const image_url = req.file ? req.file.filename : "";
+      await addProduct(
+        name,
+        description || null,
+        parseFloat(price),
+        image_url,
+        slug,
+        parseInt(category_id, 10)
+      );
+      res.redirect("/products");
+    } catch (err) {
+      console.error("addProduct error:", err);
+      res.status(500).send("Failed to add product");
+    }
   }
-});
+);
 
 // 4) Show product detail
 router.get(
@@ -81,39 +84,20 @@ router.get(
 );
 
 // 6) Handle “Edit Product” submission
-router.post(
-  "/:slug/edit",
-  async (req: Request, res: Response): Promise<void> => {
-    const {
-      id,
-      name,
-      description,
-      price,
-      image_url,
-      slug,
-      category_id,
-    } = req.body;
-    const priceNum = parseFloat(price);
-    const categoryNum = parseInt(category_id, 10);
-    const idNum = parseInt(id, 10);
-
-    try {
-      const updated = await updateProduct(
-        idNum,
-        name,
-        description || null,
-        priceNum,
-        image_url || null,
-        slug,
-        categoryNum
-      );
-      res.redirect(`/products/${updated.slug}`);
-    } catch (err) {
-      console.error("updateProduct error:", err);
-      res.status(500).send("Failed to update product");
-    }
-  }
-);
+router.post("/:slug/edit", upload.single("image_file"), async (req, res) => {
+  const { id, name, description, price, slug, category_id } = req.body;
+  const image_url = req.file ? req.file.filename : req.body.existing_image_url;
+  await updateProduct(
+    parseInt(id, 10),
+    name,
+    description || null,
+    parseFloat(price),
+    image_url,
+    slug,
+    parseInt(category_id, 10)
+  );
+  res.redirect(`/products/${slug}`);
+});
 
 // 7) Handle product deletion
 router.post(
