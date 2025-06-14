@@ -9,7 +9,7 @@ import rateLimit from "express-rate-limit";
 import apiRouter from "./routes/api";
 import session from "express-session";
 import pgSession from "connect-pg-simple";
-import authRouter from "./auth";
+import authRouter from "./routes/auth";
 import "dotenv/config";
 import { requireAuth } from "./middleware/auth";
 
